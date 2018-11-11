@@ -7,8 +7,10 @@ import {
 import TabNavigator from 'react-native-tab-navigator'
 
 // images
-import imgPolular from '../../assets/images/ic_polular.png'
-import imgTrending from '../../assets/images/ic_trending.png'
+import IMG_POPULAR from '../../assets/images/ic_polular.png'
+import IMG_TRENDING from '../../assets/images/ic_trending.png'
+import IMG_FAVORITE from '../../assets/images/ic_favorite.png'
+import IMG_MY from '../../assets/images/ic_my.png'
 
 const styles = StyleSheet.create({
   container: {
@@ -45,8 +47,8 @@ export default class HomePage extends Component {
             selected={this.state.selectedTab === 'tb_popular'}
             selectedTitleStyle={{ color: 'red' }}
             title="最热"
-            renderIcon={() => <Image style={styles.image} source={imgPolular} />}
-            renderSelectedIcon={() => <Image style={[styles.image, { tintColor: 'red' }]} source={imgPolular} />}
+            renderIcon={() => <Image style={styles.image} source={IMG_POPULAR} />}
+            renderSelectedIcon={() => <Image style={[styles.image, { tintColor: 'red' }]} source={IMG_POPULAR} />}
             badgeText="1"
             onPress={() => this.setState({ selectedTab: 'tb_popular' })}
           >
@@ -56,8 +58,8 @@ export default class HomePage extends Component {
             selected={this.state.selectedTab === 'tb_trending'}
             selectedTitleStyle={{ color: 'red' }}
             title="趋势"
-            renderIcon={() => <Image style={styles.image} source={imgTrending} />}
-            renderSelectedIcon={() => <Image style={[styles.image, { tintColor: 'red' }]} source={imgTrending} />}
+            renderIcon={() => <Image style={styles.image} source={IMG_TRENDING} />}
+            renderSelectedIcon={() => <Image style={[styles.image, { tintColor: 'red' }]} source={IMG_TRENDING} />}
             onPress={() => this.setState({ selectedTab: 'tb_trending' })}
           >
             <View style={styles.page2} />
@@ -66,8 +68,8 @@ export default class HomePage extends Component {
             selected={this.state.selectedTab === 'tb_favorite'}
             selectedTitleStyle={{ color: 'red' }}
             title="收藏"
-            renderIcon={() => <Image style={styles.image} source={imgPolular} />}
-            renderSelectedIcon={() => <Image style={[styles.image, { tintColor: 'red' }]} source={imgPolular} />}
+            renderIcon={() => <Image style={styles.image} source={IMG_FAVORITE} />}
+            renderSelectedIcon={() => <Image style={[styles.image, { tintColor: 'red' }]} source={IMG_FAVORITE} />}
             badgeText="1"
             onPress={() => this.setState({ selectedTab: 'tb_favorite' })}
           >
@@ -77,8 +79,8 @@ export default class HomePage extends Component {
             selected={this.state.selectedTab === 'tb_my'}
             selectedTitleStyle={{ color: 'red' }}
             title="我的"
-            renderIcon={() => <Image style={styles.image} source={imgTrending} />}
-            renderSelectedIcon={() => <Image style={[styles.image, { tintColor: 'red' }]} source={imgTrending} />}
+            renderIcon={() => <Image style={styles.image} source={IMG_MY} />}
+            renderSelectedIcon={() => <Image style={[styles.image, { tintColor: 'red' }]} source={IMG_MY} />}
             onPress={() => this.setState({ selectedTab: 'tb_my' })}
           >
             <View style={styles.page2} />
