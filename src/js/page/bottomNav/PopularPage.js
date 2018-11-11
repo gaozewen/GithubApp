@@ -1,12 +1,17 @@
 import React, { Component } from 'react'
 // import PropTypes from 'prop-types'
 import {
-  StyleSheet, View, Text, TextInput,
+  StyleSheet, View, Text,
 } from 'react-native'
 
-import HeaderBar from '../../common/HeaderBar'
+// libs
+import ScrollableTabView, { ScrollableTabBar } from 'react-native-scrollable-tab-view'
 
+// components
+import HeaderBar from '../../common/HeaderBar'
 import DataRepository from '../../expand/dao/DataRepository'
+
+import PopularTab from './PopularTab'
 
 const styles = StyleSheet.create({
   root: {
@@ -24,7 +29,7 @@ export default class Popular extends Component {
 
   constructor(props) {
     super(props)
-    this.dataRepository = new DataRepository()
+    // this.dataRepository = new DataRepository()
     this.state = {
       result: '',
     }
@@ -32,19 +37,6 @@ export default class Popular extends Component {
 
   componentDidMount = () => {
 
-  }
-
-  getUrl = (key) => {
-    return URL + key + QUERY_STR
-  }
-
-  onLoad = async () => {
-    // 根据 url 获取查询条件相关的 github 仓库数据
-    const url = this.getUrl(this.text)
-    const result = await this.dataRepository.fetchNetRepository(url)
-    this.setState({
-      result: JSON.stringify(result),
-    })
   }
 
   render() {
@@ -55,22 +47,13 @@ export default class Popular extends Component {
           title="最热"
           sytle={{ backgroundColor: '#6495ED' }}
         />
-        <Text
-          onPress={() => {
-            this.onLoad()
-          }}
+        <ScrollableTabView
+          renderTabBar={() => <ScrollableTabBar />}
         >
-          获取数据
-        </Text>
-        <TextInput
-          style={{ height: 40, borderWidth: 1 }}
-          onChangeText={(text) => { this.text = text }}
-        />
-        <Text
-          style={{ height: 500 }}
-        >
-          {result}
-        </Text>
+          <PopularTab tabLabel="JAVA" />
+          <PopularTab tabLabel="IOS" />
+          <PopularTab tabLabel="Android" />
+        </ScrollableTabView>
       </View>
     )
   }

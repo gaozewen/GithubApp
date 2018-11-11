@@ -6,3 +6,4 @@
 - git checkout -b [new_branch_name]
 - git push origin –-tags
 $ git tag -d v0.1.2 # 删除Tag
+$ git push origin :refs/tags/标签名
