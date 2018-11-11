@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 // import PropTypes from 'prop-types'
 import {
-  StyleSheet, View, Text, ListView,
+  StyleSheet, View,
+  ListView, RefreshControl,
 } from 'react-native'
 
 // dao
@@ -31,6 +32,7 @@ export default class PopularTab extends Component {
     this.state = {
       // 重复数据不渲染
       dataSource: new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 }),
+      isLoading: false, // 是否正在加载数据
     }
   }
 
@@ -40,13 +42,18 @@ export default class PopularTab extends Component {
 
 
   loadData = async () => { // 根据 url 获取查询条件相关的 github 仓库数据
+    const { isLoading, dataSource } = this.state
+    if (isLoading) return // lock
+    this.setState({
+      isLoading: true,
+    })
     const { tabLabel } = this.props
-    const { dataSource } = this.state
     const { fetchNetRepository } = this.dataRepository
     // 返回的时 js 对象 包含 总记录数 ...,展示位字符串需  JSON.stringify(result)
     const result = await fetchNetRepository(URL + tabLabel + QUERY_STR)
     this.setState({
       dataSource: dataSource.cloneWithRows(result.items),
+      isLoading: false,
     })
   }
 
@@ -57,12 +64,22 @@ export default class PopularTab extends Component {
   }
 
   render() {
-    const { dataSource } = this.state
+    const { dataSource, isLoading } = this.state
     return (
-      <View>
+      <View style={styles.root}>
         <ListView
           dataSource={dataSource}
           renderRow={data => this.renderRow(data)}
+          refreshControl={(
+            <RefreshControl
+              refreshing={isLoading}
+              onRefresh={() => this.loadData()}
+              colors={['#2196F3']}
+              title="Loading..."
+              titleColor="#2196F3"
+              tintColor="#2196F3"
+            />
+          )}
         />
       </View>
     )

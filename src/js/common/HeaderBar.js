@@ -26,7 +26,7 @@ const StatusBarShapek = {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#6495ED',
+    backgroundColor: '#2196F3',
     paddingTop: STATUSBAR_HEIGHT,
   },
   navBar: {

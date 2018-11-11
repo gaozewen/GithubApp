@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 // import PropTypes from 'prop-types'
 import {
-  StyleSheet, View, Text,
+  StyleSheet, View,
 } from 'react-native'
 
 // libs
@@ -9,7 +9,6 @@ import ScrollableTabView, { ScrollableTabBar } from 'react-native-scrollable-tab
 
 // components
 import HeaderBar from '../../common/HeaderBar'
-import DataRepository from '../../expand/dao/DataRepository'
 
 import PopularTab from './PopularTab'
 
@@ -19,9 +18,6 @@ const styles = StyleSheet.create({
   },
 })
 
-const URL = 'https://api.github.com/search/repositories?q='
-const QUERY_STR = '&sort=stars'
-
 export default class Popular extends Component {
   static propTypes = {
 
@@ -29,9 +25,8 @@ export default class Popular extends Component {
 
   constructor(props) {
     super(props)
-    // this.dataRepository = new DataRepository()
     this.state = {
-      result: '',
+      // result: '',
     }
   }
 
@@ -40,7 +35,7 @@ export default class Popular extends Component {
   }
 
   render() {
-    const { result } = this.state
+    // const { result } = this.state
     return (
       <View style={styles.root}>
         <HeaderBar
@@ -48,6 +43,10 @@ export default class Popular extends Component {
           sytle={{ backgroundColor: '#6495ED' }}
         />
         <ScrollableTabView
+          tabBarBackgroundColor="#2196F3"
+          tabBarActiveTextColor="#fff"
+          tabBarInactiveTextColor="#fff"
+          tabBarUnderlineStyle={{ backgroundColor: '#e7e7e7', height: 2, marginVertical: 1 }}
           renderTabBar={() => <ScrollableTabBar />}
         >
           <PopularTab tabLabel="JAVA" />

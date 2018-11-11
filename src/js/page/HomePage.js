@@ -48,42 +48,41 @@ export default class HomePage extends Component {
         <TabNavigator>
           <TabNavigator.Item
             selected={this.state.selectedTab === 'tb_popular'}
-            selectedTitleStyle={{ color: 'red' }}
+            selectedTitleStyle={{ color: '#2196F3' }}
             title="最热"
             renderIcon={() => <Image style={styles.image} source={IMG_POPULAR} />}
-            renderSelectedIcon={() => <Image style={[styles.image, { tintColor: 'red' }]} source={IMG_POPULAR} />}
-            badgeText="1"
+            renderSelectedIcon={() => <Image style={[styles.image, { tintColor: '#2196F3' }]} source={IMG_POPULAR} />}
+            // badgeText="1"
             onPress={() => this.setState({ selectedTab: 'tb_popular' })}
           >
             <PopularPage />
           </TabNavigator.Item>
           <TabNavigator.Item
             selected={this.state.selectedTab === 'tb_trending'}
-            selectedTitleStyle={{ color: 'red' }}
+            selectedTitleStyle={{ color: '#2196F3' }}
             title="趋势"
             renderIcon={() => <Image style={styles.image} source={IMG_TRENDING} />}
-            renderSelectedIcon={() => <Image style={[styles.image, { tintColor: 'red' }]} source={IMG_TRENDING} />}
+            renderSelectedIcon={() => <Image style={[styles.image, { tintColor: '#2196F3' }]} source={IMG_TRENDING} />}
             onPress={() => this.setState({ selectedTab: 'tb_trending' })}
           >
             <View style={styles.page2} />
           </TabNavigator.Item>
           <TabNavigator.Item
             selected={this.state.selectedTab === 'tb_favorite'}
-            selectedTitleStyle={{ color: 'red' }}
+            selectedTitleStyle={{ color: '#2196F3' }}
             title="收藏"
             renderIcon={() => <Image style={styles.image} source={IMG_FAVORITE} />}
-            renderSelectedIcon={() => <Image style={[styles.image, { tintColor: 'red' }]} source={IMG_FAVORITE} />}
-            badgeText="1"
+            renderSelectedIcon={() => <Image style={[styles.image, { tintColor: '#2196F3' }]} source={IMG_FAVORITE} />}
             onPress={() => this.setState({ selectedTab: 'tb_favorite' })}
           >
             <View style={styles.page1} />
           </TabNavigator.Item>
           <TabNavigator.Item
             selected={this.state.selectedTab === 'tb_my'}
-            selectedTitleStyle={{ color: 'red' }}
+            selectedTitleStyle={{ color: '#2196F3' }}
             title="我的"
             renderIcon={() => <Image style={styles.image} source={IMG_MY} />}
-            renderSelectedIcon={() => <Image style={[styles.image, { tintColor: 'red' }]} source={IMG_MY} />}
+            renderSelectedIcon={() => <Image style={[styles.image, { tintColor: '#2196F3' }]} source={IMG_MY} />}
             onPress={() => this.setState({ selectedTab: 'tb_my' })}
           >
             <View style={styles.page2} />
