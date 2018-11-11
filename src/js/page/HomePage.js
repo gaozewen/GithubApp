@@ -12,6 +12,9 @@ import IMG_TRENDING from '../../assets/images/ic_trending.png'
 import IMG_FAVORITE from '../../assets/images/ic_favorite.png'
 import IMG_MY from '../../assets/images/ic_my.png'
 
+// pages
+import PopularPage from './bottomNav/PopularPage'
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -52,7 +55,7 @@ export default class HomePage extends Component {
             badgeText="1"
             onPress={() => this.setState({ selectedTab: 'tb_popular' })}
           >
-            <View style={styles.page1} />
+            <PopularPage />
           </TabNavigator.Item>
           <TabNavigator.Item
             selected={this.state.selectedTab === 'tb_trending'}

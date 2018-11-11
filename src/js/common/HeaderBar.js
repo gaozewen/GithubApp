@@ -26,14 +26,14 @@ const StatusBarShapek = {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'blue',
+    backgroundColor: '#6495ED',
+    paddingTop: STATUSBAR_HEIGHT,
   },
   navBar: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    height: (Platform.OS === 'ios' ? NAV_BAR_HEIGHT_IOS : NAV_BAR_HEIGHT_ANDROID) + STATUSBAR_HEIGHT,
-    paddingTop: STATUSBAR_HEIGHT,
+    height: Platform.OS === 'ios' ? NAV_BAR_HEIGHT_IOS : NAV_BAR_HEIGHT_ANDROID,
   },
   middleContainer: {
     justifyContent: 'center',
