@@ -13,7 +13,7 @@ import RepositoryCell from './RepositoryCell'
 
 // https://api.github.com/search/repositories?q=ios&sort=stars
 const URL = 'https://api.github.com/search/repositories?q='
-const QUERY_STR = '&sort=stars'
+const QUERY_STR = '&sort=stars&page=1&per_page='
 
 const styles = StyleSheet.create({
   root: {
@@ -33,6 +33,7 @@ export default class PopularTab extends Component {
       // 重复数据不渲染
       dataSource: new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 }),
       isLoading: false, // 是否正在加载数据
+      currentPage: 1, // 当前页
     }
   }
 
@@ -42,7 +43,7 @@ export default class PopularTab extends Component {
 
 
   loadData = async () => { // 根据 url 获取查询条件相关的 github 仓库数据
-    const { isLoading, dataSource } = this.state
+    const { isLoading, dataSource, currentPage } = this.state
     if (isLoading) return // lock
     this.setState({
       isLoading: true,
@@ -50,12 +51,31 @@ export default class PopularTab extends Component {
     const { tabLabel } = this.props
     const { fetchNetRepository } = this.dataRepository
     // 返回的时 js 对象 包含 总记录数 ...,展示位字符串需  JSON.stringify(result)
-    const result = await fetchNetRepository(URL + tabLabel + QUERY_STR)
+    const result = await fetchNetRepository(URL + tabLabel + QUERY_STR + currentPage * 20)
     this.setState({
       dataSource: dataSource.cloneWithRows(result.items),
       isLoading: false,
+      currentPage: (currentPage < 100 ? currentPage + 1 : 1),
     })
   }
+
+  fetchMore = async () => { // 根据 url 获取查询条件相关的 github 仓库数据
+    const { isLoading, dataSource, currentPage } = this.state
+    if (isLoading) return // lock
+    this.setState({
+      isLoading: true,
+    })
+    const { tabLabel } = this.props
+    const { fetchNetRepository } = this.dataRepository
+    // 返回的时 js 对象 包含 总记录数 ...,展示位字符串需  JSON.stringify(result)
+    const result = await fetchNetRepository(URL + tabLabel + QUERY_STR + currentPage * 20)
+    this.setState({
+      dataSource: dataSource.cloneWithRows(result.items),
+      isLoading: false,
+      currentPage: (currentPage < 100 ? currentPage + 1 : 1),
+    })
+  }
+
 
   renderRow = (data) => {
     return (
@@ -70,6 +90,8 @@ export default class PopularTab extends Component {
         <ListView
           dataSource={dataSource}
           renderRow={data => this.renderRow(data)}
+          onEndReached={() => this.fetchMore()}
+          onEndReachedThreshold={20}
           refreshControl={(
             <RefreshControl
               refreshing={isLoading}
