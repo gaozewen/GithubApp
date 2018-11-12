@@ -33,7 +33,7 @@ export default class ArrayUtils {
    * @return Array 新的数组
    */
   static clone(from) {
-    if (!from) return [];
+    if (!from) return []; // 数组为空
     const newArray = [];
     for (let i = 0, l = from.length; i < l; i++) {
       newArray[i] = from[i];

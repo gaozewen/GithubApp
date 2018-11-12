@@ -35,6 +35,13 @@ export default class MyPage extends Component {
         >
           自定义标签页
         </Text>
+        <Text
+          onPress={() => {
+            navigation.navigate('SortKeyPage')
+          }}
+        >
+          已订阅标签排序页
+        </Text>
       </View>
     )
   }

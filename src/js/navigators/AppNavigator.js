@@ -8,6 +8,7 @@ import { StackNavigator } from 'react-navigation'
 import WelcomePage from '../page/WelcomePage'
 import HomePage from '../page/HomePage'
 import CustomKeyPage from '../page/my/CustomKeyPage'
+import SortKeyPage from '../page/my/SortKeyPage'
 
 const AppNavigator = StackNavigator(
   {
@@ -15,6 +16,7 @@ const AppNavigator = StackNavigator(
     HomePage: { screen: HomePage },
     WelcomePage: { screen: WelcomePage },
     CustomKeyPage: { screen: CustomKeyPage },
+    SortKeyPage: { screen: SortKeyPage },
   },
   {
     navigationOptions: {
