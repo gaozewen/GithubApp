@@ -13,7 +13,7 @@ import IMG_FAVORITE from '../../assets/images/ic_favorite.png'
 import IMG_MY from '../../assets/images/ic_my.png'
 
 // pages
-import PopularPage from './bottomNav/PopularPage'
+import PopularPage from './popular/PopularPage'
 
 const styles = StyleSheet.create({
   container: {

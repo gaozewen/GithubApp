@@ -6,7 +6,7 @@ import {
 } from 'react-native'
 
 // imgs
-import IMG_STAR from '../../../assets/images/ic_star.png'
+import IMG_STAR from '../../assets/images/ic_star.png'
 
 const styles = StyleSheet.create({
   root: {
