@@ -104,11 +104,12 @@ export default class CustomKeyPage extends Component {
 
   toggleCheckbox = (item) => {
     item.checked = !item.checked
-    this.setState((state) => {
-      return {
-        dataArray: [...state.dataArray],
-      }
-    })
+    this.forceUpdate() // 强制刷新
+    // this.setState((state) => {
+    //   return {
+    //     dataArray: [...state.dataArray],
+    //   }
+    // })
   }
 
   onClick = (item) => {
