@@ -1,21 +1,41 @@
-import React from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import {
   StyleSheet, View, Text,
 } from 'react-native'
 
+import HeaderBar from '../../common/HeaderBar'
 
 const styles = StyleSheet.create({
   root: {
-    justifyContent: 'center',
-    alignItems: 'center',
     flex: 1,
   },
 })
 
-export default () => {
-  return (
-    <View style={styles.root}>
-      <Text> 我是 My页</Text>
-    </View>
-  )
+export default class MyPage extends Component {
+  static propTypes = {
+    navigation: PropTypes.object,
+  }
+
+  componentDidMount = () => {
+
+  }
+
+  render() {
+    const { navigation } = this.props
+    return (
+      <View style={styles.root}>
+        <HeaderBar
+          title="我的"
+        />
+        <Text
+          onPress={() => {
+            navigation.navigate('CustomKeyPage')
+          }}
+        >
+          自定义标签页
+        </Text>
+      </View>
+    )
+  }
 }

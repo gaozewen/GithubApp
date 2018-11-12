@@ -3,14 +3,14 @@ import React, { Component } from 'react'
 import {
   StyleSheet, View,
 } from 'react-native'
-
 // libs
 import ScrollableTabView, { ScrollableTabBar } from 'react-native-scrollable-tab-view'
-
-// components
+// common
 import HeaderBar from '../../common/HeaderBar'
-
+// components
 import PopularTab from './PopularTab'
+// dao
+import LanguageDao, { USE_IN } from '../../expand/dao/LanguageDao'
 
 const styles = StyleSheet.create({
   root: {
@@ -25,23 +25,33 @@ export default class Popular extends Component {
 
   constructor(props) {
     super(props)
+    this.languageDao = new LanguageDao(USE_IN.POPULAR)
     this.state = {
-      // result: '',
+      languages: [],
     }
   }
 
-  componentDidMount = () => {
+  initData = () => {
+    const { fetch } = this.languageDao
+    fetch()
+      .then((result) => {
+        this.setState({
+          languages: result,
+        })
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
 
+  componentDidMount = () => {
+    this.initData()
   }
 
   render() {
-    // const { result } = this.state
-    return (
-      <View style={styles.root}>
-        <HeaderBar
-          title="最热"
-          sytle={{ backgroundColor: '#6495ED' }}
-        />
+    const { languages } = this.state
+    const content = languages.length > 0 // 防止 ScrollableTabView 因无法计算 PopularTab 的个数 而导致页面无限渲染
+      ? (
         <ScrollableTabView
           tabBarBackgroundColor="#2196F3"
           tabBarActiveTextColor="#fff"
@@ -49,10 +59,18 @@ export default class Popular extends Component {
           tabBarUnderlineStyle={{ backgroundColor: '#e7e7e7', height: 2, marginVertical: 1 }}
           renderTabBar={() => <ScrollableTabBar />}
         >
-          <PopularTab tabLabel="JAVA" />
-          <PopularTab tabLabel="IOS" />
-          <PopularTab tabLabel="Android" />
+          {languages.map(item => (item.checked
+            ? <PopularTab key={item.name} tabLabel={item.name} /> : null))}
         </ScrollableTabView>
+      )
+      : null
+    return (
+      <View style={styles.root}>
+        <HeaderBar
+          title="最热"
+          sytle={{ backgroundColor: '#6495ED' }}
+        />
+        {content}
       </View>
     )
   }

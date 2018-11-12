@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import {
   StyleSheet, View, Image,
 } from 'react-native'
@@ -14,6 +15,7 @@ import IMG_MY from '../../assets/images/ic_my.png'
 
 // pages
 import PopularPage from './popular/PopularPage'
+import MyPage from './my/MyPage'
 
 const styles = StyleSheet.create({
   container: {
@@ -35,14 +37,19 @@ const styles = StyleSheet.create({
 })
 
 export default class HomePage extends Component {
+  static propTypes = {
+    navigation: PropTypes.object,
+  }
+
   constructor(props) {
     super(props)
     this.state = {
-      selectedTab: 'tb_popular', // 初始化 默认选中的 tab 页
+      selectedTab: 'tb_my', // 初始化 默认选中的 tab 页
     }
   }
 
   render() {
+    const { navigation } = this.props
     return (
       <View style={styles.container}>
         <TabNavigator>
@@ -85,7 +92,9 @@ export default class HomePage extends Component {
             renderSelectedIcon={() => <Image style={[styles.image, { tintColor: '#2196F3' }]} source={IMG_MY} />}
             onPress={() => this.setState({ selectedTab: 'tb_my' })}
           >
-            <View style={styles.page2} />
+            <MyPage
+              navigation={navigation}
+            />
           </TabNavigator.Item>
         </TabNavigator>
       </View>
