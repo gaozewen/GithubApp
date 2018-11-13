@@ -45,7 +45,7 @@ export default class HomePage extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      selectedTab: 'tb_popular', // 初始化 默认选中的 tab 页
+      selectedTab: 'tb_trending', // 初始化 默认选中的 tab 页
     }
   }
 
@@ -61,55 +61,41 @@ export default class HomePage extends Component {
     }
   }
 
+  /**
+   * 渲染 当前 tab 页内容
+   *
+   * @param {*} PageComponent
+   * @param {*} selectedTab
+   * @param {*} title
+   * @param {*} iconImg
+   * @returns
+   * @memberof HomePage
+   */
+  renderTabItem(PageComponent, selectedTab, title, iconImg) {
+    return (
+      <TabNavigator.Item
+        selected={this.state.selectedTab === selectedTab}
+        selectedTitleStyle={{ color: '#2196F3' }}
+        title={title}
+        renderIcon={() => <Image style={styles.image} source={iconImg} />}
+        renderSelectedIcon={() => <Image style={[styles.image, { tintColor: '#2196F3' }]} source={iconImg} />}
+        // badgeText="1"
+        onPress={() => this.setState({ selectedTab })}
+      >
+        <PageComponent navigation={this.props.navigation} />
+      </TabNavigator.Item>
+    )
+  }
+
 
   render() {
-    const { navigation } = this.props
     return (
       <View style={styles.container}>
         <TabNavigator>
-          <TabNavigator.Item
-            selected={this.state.selectedTab === 'tb_popular'}
-            selectedTitleStyle={{ color: '#2196F3' }}
-            title="最热"
-            renderIcon={() => <Image style={styles.image} source={IMG_POPULAR} />}
-            renderSelectedIcon={() => <Image style={[styles.image, { tintColor: '#2196F3' }]} source={IMG_POPULAR} />}
-            // badgeText="1"
-            onPress={() => this.setState({ selectedTab: 'tb_popular' })}
-          >
-            <PopularPage navigation={navigation} />
-          </TabNavigator.Item>
-          <TabNavigator.Item
-            selected={this.state.selectedTab === 'tb_trending'}
-            selectedTitleStyle={{ color: '#2196F3' }}
-            title="趋势"
-            renderIcon={() => <Image style={styles.image} source={IMG_TRENDING} />}
-            renderSelectedIcon={() => <Image style={[styles.image, { tintColor: '#2196F3' }]} source={IMG_TRENDING} />}
-            onPress={() => this.setState({ selectedTab: 'tb_trending' })}
-          >
-            <TrendingPage navigation={navigation} />
-          </TabNavigator.Item>
-          <TabNavigator.Item
-            selected={this.state.selectedTab === 'tb_favorite'}
-            selectedTitleStyle={{ color: '#2196F3' }}
-            title="收藏"
-            renderIcon={() => <Image style={styles.image} source={IMG_FAVORITE} />}
-            renderSelectedIcon={() => <Image style={[styles.image, { tintColor: '#2196F3' }]} source={IMG_FAVORITE} />}
-            onPress={() => this.setState({ selectedTab: 'tb_favorite' })}
-          >
-            <View style={styles.page1} />
-          </TabNavigator.Item>
-          <TabNavigator.Item
-            selected={this.state.selectedTab === 'tb_my'}
-            selectedTitleStyle={{ color: '#2196F3' }}
-            title="我的"
-            renderIcon={() => <Image style={styles.image} source={IMG_MY} />}
-            renderSelectedIcon={() => <Image style={[styles.image, { tintColor: '#2196F3' }]} source={IMG_MY} />}
-            onPress={() => this.setState({ selectedTab: 'tb_my' })}
-          >
-            <MyPage
-              navigation={navigation}
-            />
-          </TabNavigator.Item>
+          {this.renderTabItem(PopularPage, 'tb_popular', '最热', IMG_POPULAR)}
+          {this.renderTabItem(TrendingPage, 'tb_trending', '趋势', IMG_TRENDING)}
+          {this.renderTabItem(MyPage, 'tb_favorite', '收藏', IMG_FAVORITE)}
+          {this.renderTabItem(MyPage, 'tb_my', '我的', IMG_MY)}
         </TabNavigator>
       </View>
     )

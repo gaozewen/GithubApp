@@ -4,9 +4,10 @@ import {
   StyleSheet, View, Text, Image,
   TouchableOpacity,
 } from 'react-native'
-
+// libs
+import HTMLView from 'react-native-htmlview'
 // imgs
-import IMG_STAR from '../../assets/images/ic_star.png'
+import IMG_STAR from '../../../assets/images/ic_star.png'
 
 const styles = StyleSheet.create({
   root: {
@@ -60,7 +61,7 @@ const styles = StyleSheet.create({
   },
 })
 
-export default class RepositoryCell extends Component {
+export default class TrendingRepoCell extends Component {
   static propTypes = {
     data: PropTypes.object,
     onSelect: PropTypes.func,
@@ -80,23 +81,25 @@ export default class RepositoryCell extends Component {
 
         <View style={styles.cell_container}>
 
-          <Text style={styles.title}>{data.full_name}</Text>
+          <Text style={styles.title}>{data.fullName}</Text>
 
-          <Text style={styles.desc}>{data.description}</Text>
+          <HTMLView
+            value={`<p>${data.description}</p>`}
+            FonLinkLongPress={() => { }}
+            stylesheet={{ p: styles.desc, a: styles.desc }}
+          />
+
+          <Text style={{ color: '#2196F3', marginBottom: 6 }}>{data.meta}</Text>
 
           <View style={styles.bottom}>
 
             <View style={styles.bottom_item}>
-              <Text>Author：</Text>
-              <Image
-                style={styles.avatar}
-                source={{ uri: data.owner.avatar_url }}
-              />
-            </View>
+              <Text style={{ color: '#757575' }}>Build by：</Text>
+              {
+                data.contributors
+                  .map(item => (<Image key={item} style={styles.avatar} source={{ uri: item }} />))
+              }
 
-            <View style={styles.bottom_item}>
-              <Text style={{ color: '#757575' }}>Stars：</Text>
-              <Text style={{ color: '#757575' }}>{data.stargazers_count}</Text>
             </View>
 
             <Image style={styles.star} source={IMG_STAR} />

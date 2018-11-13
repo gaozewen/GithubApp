@@ -16,7 +16,7 @@ export default class LanguageDao {
 
   save = (data) => {
     AsyncStorage.setItem(this.itemKey, JSON.stringify(data), (error) => {
-      
+      console.log(error)
     })
   }
 

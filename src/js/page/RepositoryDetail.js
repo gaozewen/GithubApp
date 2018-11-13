@@ -14,6 +14,7 @@ const styles = StyleSheet.create({
   },
 })
 
+const TRENDING_URL = 'https://github.com/'
 export default class RepositoryDetail extends Component {
   static propTypes = {
     navigation: PropTypes.object,
@@ -22,8 +23,8 @@ export default class RepositoryDetail extends Component {
   constructor(props) {
     super(props)
     this.item = this.props.navigation.getParam('item')
-    const title = this.item.full_name
-    const url = this.item.html_url
+    const title = this.item.full_name || this.item.fullName // 前者为 popular 后者 为 trending 页的数据
+    const url = this.item.html_url || (TRENDING_URL + title)
     this.state = {
       title,
       url,
