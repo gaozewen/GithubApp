@@ -5,6 +5,8 @@ import { StackNavigator } from 'react-navigation'
 // Test
 // import AsyncStorageTest from '../test/AsyncStorageTest'
 // import WebViewTest from '../test/WebViewTest'
+// import TrendingTest from '../test/TrendingTest'
+
 // Official
 import WelcomePage from '../page/WelcomePage'
 import HomePage from '../page/HomePage'
@@ -14,7 +16,7 @@ import RepositoryDetail from '../page/RepositoryDetail'
 
 const AppNavigator = StackNavigator(
   {
-    // WebViewTest: { screen: WebViewTest },
+    // TrendingTest: { screen: TrendingTest },
     HomePage: { screen: HomePage },
     WelcomePage: { screen: WelcomePage },
     CustomKeyPage: { screen: CustomKeyPage },

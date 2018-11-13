@@ -1,6 +1,18 @@
 import { AsyncStorage } from 'react-native'
+// libs
+import GitHubTrending from 'GitHubTrending'
 
+
+export const USE_IN = {
+  POPULAR: 'use_in_popular_page',
+  TRENDING: 'use_in_tending_page',
+}
 export default class DataRepository {
+  constructor(whichPageUse) {
+    this.use_in = whichPageUse
+    if (whichPageUse === USE_IN.TRENDING) this.trending = new GitHubTrending()
+  }
+
   /**
    * 获取 github 仓库数据
    *
@@ -45,17 +57,29 @@ export default class DataRepository {
    */
   fetchNetRepository = (url) => {
     return new Promise((resolve, reject) => {
-      fetch(url)
-        .then(resp => resp.json())
-        .then((result) => {
-          if (!result) {
-            reject(new Error('responseData is null'))
-            return
-          }
-          resolve(result.items)
-          this.saveRespositoryToLocal(url, result.items)
-        })
-        .catch(err => reject(err))
+      if (this.use_in === USE_IN.POPULAR) {
+        fetch(url)
+          .then(resp => resp.json())
+          .then((result) => {
+            if (!result) {
+              reject(new Error('responseData is null'))
+              return
+            }
+            resolve(result.items)
+            this.saveRespositoryToLocal(url, result.items)
+          })
+          .catch(err => reject(err))
+      } else {
+        this.trending.fetchTrending(url)
+          .then((result) => {
+            if (!result) {
+              reject(new Error('responseData is null'))
+              return
+            }
+            resolve(result)
+            this.saveRespositoryToLocal(url, result)
+          })
+      }
     })
   }
 

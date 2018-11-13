@@ -6,7 +6,7 @@ import {
 } from 'react-native'
 
 // dao
-import DataRepository from '../../expand/dao/DataRepository'
+import DataRepository, { USE_IN } from '../../expand/dao/DataRepository'
 
 // components
 import RepositoryCell from '../../common/RepositoryCell'
@@ -34,7 +34,7 @@ export default class PopularTab extends Component {
 
   constructor(props) {
     super(props)
-    this.dataRepository = new DataRepository()
+    this.dataRepository = new DataRepository(USE_IN.POPULAR)
     this.state = {
       // 重复数据不渲染
       dataSource: new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 }),

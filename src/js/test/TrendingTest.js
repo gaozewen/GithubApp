@@ -3,10 +3,9 @@ import React, { Component } from 'react'
 import {
   StyleSheet, View, Text, TextInput,
 } from 'react-native'
-// commons
-import HeaderBar from '../../common/HeaderBar'
-// dao
-import DataRepository, { USE_IN } from '../../expand/dao/DataRepository'
+import GitHubTrending from 'GitHubTrending'
+
+import HeaderBar from '../common/HeaderBar'
 
 const styles = StyleSheet.create({
   root: {
@@ -23,7 +22,7 @@ export default class TrendingTest extends Component {
 
   constructor(props) {
     super(props)
-    this.dataRepository = new DataRepository(USE_IN.TRENDING)
+    this.trending = new GitHubTrending()
     this.state = {
       data: '',
     }
@@ -33,12 +32,9 @@ export default class TrendingTest extends Component {
 
   }
 
-  initData = async () => {
-    const url = `${URL + this.Text}?per_page=20`
-    const result = await this.dataRepository
-      .fetchRepository(url)
-      .catch(err => console.log(err))
-
+  onLoad = async () => {
+    const url = URL + this.Text
+    const result = await this.trending.fetchTrending(url).catch(err => console.log(err))
     this.setState({
       data: JSON.stringify(result),
     })
@@ -56,7 +52,7 @@ export default class TrendingTest extends Component {
           onChangeText={(text) => { this.text = text }}
         />
         <Text
-          onPress={() => { this.initData() }}
+          onPress={() => { this.onLoad() }}
         >
           加载数据
         </Text>
