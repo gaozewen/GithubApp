@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {
-  StyleSheet, View, Image,
+  StyleSheet, View, Image, DeviceEventEmitter,
 } from 'react-native'
 
 // libs
@@ -47,6 +47,19 @@ export default class HomePage extends Component {
       selectedTab: 'tb_my', // 初始化 默认选中的 tab 页
     }
   }
+
+  componentDidMount = () => {
+    this.listener = DeviceEventEmitter.addListener('showToast', (text) => {
+      console.log(text)
+    })
+  }
+
+  componentWillUnmount = () => {
+    if (this.listener) {
+      this.listener.remove()
+    }
+  }
+
 
   render() {
     const { navigation } = this.props

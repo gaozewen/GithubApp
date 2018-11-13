@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 // import PropTypes from 'prop-types'
 import {
-  StyleSheet, View,
+  StyleSheet, View, DeviceEventEmitter,
 } from 'react-native'
 // libs
 import ScrollableTabView, { ScrollableTabBar } from 'react-native-scrollable-tab-view'
@@ -31,22 +31,30 @@ export default class Popular extends Component {
     }
   }
 
-  initData = () => {
+  initData = async () => {
     const { fetch } = this.languageDao
-    fetch()
-      .then((result) => {
-        this.setState({
-          languages: result,
-        })
+    const result = await fetch().catch(err => console.log(err))
+    if (result && result.length > 0) {
+      this.setState({
+        languages: result,
       })
-      .catch((err) => {
-        console.log(err)
-      })
+    }
   }
 
   componentDidMount = () => {
     this.initData()
+
+    this.listener = DeviceEventEmitter.addListener('update_popular_page_labels', () => {
+      this.initData()
+    })
   }
+
+  componentWillUnmount = () => {
+    if (this.listener) {
+      this.listener.remove()
+    }
+  }
+
 
   render() {
     const { languages } = this.state

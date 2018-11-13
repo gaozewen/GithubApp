@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {
-  StyleSheet, View, ScrollView, Image, Alert,
+  StyleSheet, View, ScrollView, Image, Alert, DeviceEventEmitter,
 } from 'react-native'
 
 // libs
@@ -110,6 +110,7 @@ export default class CustomKeyPage extends Component {
         this.languageDao.save(this.state.dataArray)
       }
     }
+    DeviceEventEmitter.emit('update_popular_page_labels')
     navigation.pop()
   }
 
