@@ -44,7 +44,7 @@ export default class HomePage extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      selectedTab: 'tb_my', // 初始化 默认选中的 tab 页
+      selectedTab: 'tb_popular', // 初始化 默认选中的 tab 页
     }
   }
 
@@ -75,7 +75,7 @@ export default class HomePage extends Component {
             // badgeText="1"
             onPress={() => this.setState({ selectedTab: 'tb_popular' })}
           >
-            <PopularPage />
+            <PopularPage navigation={navigation} />
           </TabNavigator.Item>
           <TabNavigator.Item
             selected={this.state.selectedTab === 'tb_trending'}

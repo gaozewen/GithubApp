@@ -44,7 +44,11 @@ export default class WebViewTest extends Component {
   }
 
   componentDidMount = () => {
-
+    this.state = {
+      url: URL,
+      title: '',
+      canGoBack: false,
+    }
   }
 
   goBack = () => {

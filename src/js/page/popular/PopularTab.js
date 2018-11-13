@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-// import PropTypes from 'prop-types'
+import PropTypes from 'prop-types'
 import {
   StyleSheet, View,
   ListView, RefreshControl,
@@ -29,7 +29,7 @@ const DATA_TYPE = {
 
 export default class PopularTab extends Component {
   static propTypes = {
-
+    navigation: PropTypes.object,
   }
 
   constructor(props) {
@@ -79,10 +79,17 @@ export default class PopularTab extends Component {
     this.setState({ isLoading: false })
   }
 
+  onSelect = (item) => {
+    const { navigation } = this.props
+    navigation.navigate('RepositoryDetail', { item })
+  }
 
   renderRow = (data) => {
     return (
-      <RepositoryCell data={data} />
+      <RepositoryCell
+        data={data}
+        onSelect={(item) => { this.onSelect(item) }}
+      />
     )
   }
 

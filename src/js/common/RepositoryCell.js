@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
 export default class RepositoryCell extends Component {
   static propTypes = {
     data: PropTypes.object,
+    onSelect: PropTypes.func,
   }
 
   componentDidMount = () => {
@@ -70,9 +71,12 @@ export default class RepositoryCell extends Component {
   }
 
   render() {
-    const { data } = this.props
+    const { data, onSelect } = this.props
     return (
-      <TouchableOpacity style={styles.root}>
+      <TouchableOpacity
+        style={styles.root}
+        onPress={() => onSelect(data)}
+      >
 
         <View style={styles.cell_container}>
 

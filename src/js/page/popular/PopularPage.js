@@ -68,7 +68,7 @@ export default class Popular extends Component {
           renderTabBar={() => <ScrollableTabBar />}
         >
           {languages.map(item => (item.checked
-            ? <PopularTab key={item.name} tabLabel={item.name} /> : null))}
+            ? <PopularTab key={item.name} tabLabel={item.name} {...this.props} /> : null))}
         </ScrollableTabView>
       )
       : null
