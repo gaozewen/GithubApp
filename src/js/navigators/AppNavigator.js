@@ -4,6 +4,7 @@
 import { StackNavigator } from 'react-navigation'
 // Test
 // import AsyncStorageTest from '../test/AsyncStorageTest'
+import WebViewTest from '../test/WebViewTest'
 // Official
 import WelcomePage from '../page/WelcomePage'
 import HomePage from '../page/HomePage'
@@ -12,7 +13,7 @@ import SortKeyPage from '../page/my/SortKeyPage'
 
 const AppNavigator = StackNavigator(
   {
-    // AsyncStorageTest: { screen: AsyncStorageTest },
+    WebViewTest: { screen: WebViewTest },
     HomePage: { screen: HomePage },
     WelcomePage: { screen: WelcomePage },
     CustomKeyPage: { screen: CustomKeyPage },
