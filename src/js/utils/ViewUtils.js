@@ -21,4 +21,17 @@ export default class ViewUtils {
       </TouchableOpacity>
     )
   }
+
+  static getRightButton(title, callBack) {
+    return (
+      <TouchableOpacity
+        style={{ alignItems: 'center' }}
+        onPress={callBack}
+      >
+        <View style={{ marginRight: 10 }}>
+          <Text style={{ fontSize: 20, color: '#FFFFFF' }}>{title}</Text>
+        </View>
+      </TouchableOpacity>
+    )
+  }
 }

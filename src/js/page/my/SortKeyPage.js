@@ -112,7 +112,7 @@ export default class SortKeyPage extends Component {
     return (
       <View style={styles.root}>
         <HeaderBar
-          title="欢迎"
+          title="标签排序"
           sytle={{ backgroundColor: '#6495ED' }}
           leftButton={ViewUtils.getBackButton(() => { this.onBack() })}
           rightButton={rightButton}

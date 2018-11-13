@@ -42,6 +42,15 @@ export default class MyPage extends Component {
         >
           已订阅标签排序页
         </Text>
+        <Text
+          onPress={() => {
+            navigation.navigate('CustomKeyPage', {
+              isRemoveKeyPage: true,
+            })
+          }}
+        >
+          标签移除页
+        </Text>
       </View>
     )
   }

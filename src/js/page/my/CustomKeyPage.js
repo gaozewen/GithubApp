@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {
-  StyleSheet, View, Text, ScrollView, Image,
-  TouchableOpacity, Alert,
+  StyleSheet, View, ScrollView, Image, Alert,
 } from 'react-native'
 
 // libs
@@ -36,6 +35,7 @@ export default class CustomKeyPage extends Component {
 
   constructor(props) {
     super(props)
+    this.isRemoveKeyPage = props.navigation.getParam('isRemoveKeyPage', false) // RemovePage
     this.languageDao = new LanguageDao(USE_IN.POPULAR) // 初始化 dao
     this.changeValues = [] // 初始化改变的 checkbox
     this.state = {
@@ -47,6 +47,16 @@ export default class CustomKeyPage extends Component {
     const { fetch } = this.languageDao
     fetch()
       .then((result) => {
+        if (this.isRemoveKeyPage) { // RemovePage
+          this.originalArray = result // 数据库中原始数据
+          const unSubscribeArray = [] // 获取未订阅的 标签
+          result.forEach((item) => { // 剔除 已订阅的 标签
+            if (!item.checked) {
+              unSubscribeArray.push(item)
+            }
+          })
+          result = unSubscribeArray
+        }
         this.setState({
           dataArray: result,
         })
@@ -69,7 +79,7 @@ export default class CustomKeyPage extends Component {
   }
 
   onBack = () => {
-    if (this.isAllUnChecked()) {
+    if (!this.isRemoveKeyPage && this.isAllUnChecked()) {
       Alert.alert('提示', '主人,至少要保留一个哦！')
       return
     }
@@ -80,24 +90,25 @@ export default class CustomKeyPage extends Component {
     }
     Alert.alert('提示', '要保存修改吗？', [
       { text: '不保存', onPress: () => { navigation.pop() } },
-      {
-        text: '保存',
-        onPress: () => {
-          this.languageDao.save(this.state.dataArray)
-          navigation.pop()
-        },
-      },
+      { text: '保存', onPress: () => { this.onSave(false) } },
     ])
   }
 
-  onSave = () => { // 退出此界面时 保存用户设置
-    if (this.isAllUnChecked()) {
+  onSave = (isNeedVerify) => { // 退出此界面时 保存用户设置
+    if (!this.isRemoveKeyPage && isNeedVerify && this.isAllUnChecked()) {
       Alert.alert('提示', '主人,至少要保留一个哦！')
       return
     }
     const { navigation } = this.props
     if (this.changeValues.length > 0) {
-      this.languageDao.save(this.state.dataArray)
+      if (this.isRemoveKeyPage) { // RemovePage
+        this.changeValues.forEach((item) => {
+          ArrayUtils.remove(this.originalArray, item)
+        })
+        this.languageDao.save(this.originalArray)
+      } else {
+        this.languageDao.save(this.state.dataArray)
+      }
     }
     navigation.pop()
   }
@@ -119,12 +130,13 @@ export default class CustomKeyPage extends Component {
 
   renderCheckBox = (item) => { // CheckBox
     const leftText = item.name
+    const isChecked = item.checked
     return (
       <CheckBox
         style={{ flex: 1, padding: 10 }}
         onClick={() => this.onClick(item)}
         leftText={leftText}
-        isChecked={item.checked}
+        isChecked={isChecked}
         checkedImage={<Image style={{ tintColor: '#2196F3' }} source={IMG_CHECKED} />}
         unCheckedImage={<Image style={{ tintColor: '#2196F3' }} source={IMG_UNCHECKED} />}
       />
@@ -160,23 +172,13 @@ export default class CustomKeyPage extends Component {
   }
 
   render() {
-    const rightButton = (
-      <TouchableOpacity
-        onPress={() => {
-          this.onSave()
-        }}
-      >
-        <View style={{ margin: 10 }}>
-          <Text style={{ fontSize: 20, color: '#fff' }}>保存</Text>
-        </View>
-      </TouchableOpacity>
-    )
+    const rightButtonTitle = this.isRemoveKeyPage ? '移除' : '保存' // RemovePage
     return (
       <View style={styles.root}>
         <HeaderBar
-          title="自定义标签"
+          title={this.isRemoveKeyPage ? '标签移除' : '自定义标签'}
           leftButton={ViewUtils.getBackButton(() => { this.onBack() })}
-          rightButton={rightButton}
+          rightButton={ViewUtils.getRightButton(rightButtonTitle, () => { this.onSave(true) })}
         />
         <ScrollView>
           {this.renderCheckBoxList()}
