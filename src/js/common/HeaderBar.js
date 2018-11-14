@@ -3,7 +3,6 @@ import React, { PureComponent } from 'react'
 import {
   StyleSheet,
   Platform,
-  DeviceInfo,
   StatusBar,
   Text,
   View,
@@ -11,13 +10,15 @@ import {
   NativeModules,
 } from 'react-native'
 import PropTypes from 'prop-types'
+// utils
+import DeviceUtils from '../utils/DeviceUtils'
 
 const { StatusBarManager } = NativeModules
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT
 
 const NAV_BAR_HEIGHT_ANDROID = 50
 const NAV_BAR_HEIGHT_IOS = 44
-const STATUS_BAR_HEIGHT = DeviceInfo.isIPhoneX_deprecated ? 0 : 20
+const STATUS_BAR_HEIGHT = DeviceUtils.isIphoneX() ? 0 : 20
 const StatusBarShapek = {
   backgroundColor: PropTypes.string,
   barStyle: PropTypes.oneOf(['default', 'light-content', 'dark-content']),

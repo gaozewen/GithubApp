@@ -29,6 +29,7 @@ const DATA_TYPE = {
 export default class TrendingTab extends Component {
   static propTypes = {
     navigation: PropTypes.object,
+    timespan: PropTypes.object,
   }
 
   constructor(props) {
@@ -42,7 +43,13 @@ export default class TrendingTab extends Component {
   }
 
   componentDidMount = () => {
-    this.loadData(DATA_TYPE.INIT)
+    this.loadData(DATA_TYPE.INIT, this.props.timespan)
+  }
+
+  componentWillReceiveProps = (nextProps) => { // 将要收到的新的 timespan
+    if (nextProps.timespan !== this.props.timespan) {
+      this.loadData(DATA_TYPE.INIT, nextProps.timespan)
+    }
   }
 
 
@@ -54,18 +61,18 @@ export default class TrendingTab extends Component {
    * @memberof TrendingTab
    */
   getFetchUrl(timespan, languageType) {
-    return API_URL + languageType + timespan + QUERY_STR
+    return `${API_URL + languageType}?since=${timespan.searchText}${QUERY_STR}`
   }
 
-  loadData = async (dataType) => { // 根据 url 获取查询条件相关的 github 仓库数据
+  loadData = async (dataType, timespan) => { // 根据 url 获取查询条件相关的 github 仓库数据
     if (this.state.isLoading) return
     this.setState({ isLoading: true }) // lock
 
     const { dataSource } = this.state
-    const { tabLabel } = this.props
+    const { tabLabel } = this.props // 上面组件传过来的 timespan
     const { fetchRepository, fetchNetRepository } = this.dataRepository
 
-    const reqUrl = this.getFetchUrl('?since=daily', tabLabel)
+    const reqUrl = this.getFetchUrl(timespan, tabLabel)
     let items = []
     if (dataType === DATA_TYPE.INIT) { // 初始化
       items = await fetchRepository(reqUrl).catch(err => console.log(err))
@@ -107,7 +114,7 @@ export default class TrendingTab extends Component {
           refreshControl={(
             <RefreshControl
               refreshing={isLoading}
-              onRefresh={() => this.loadData(DATA_TYPE.REFRESHING)}
+              onRefresh={() => this.loadData(DATA_TYPE.REFRESHING, this.props.timespan)}
               colors={['#2196F3']}
               title="Loading..."
               titleColor="#2196F3"
