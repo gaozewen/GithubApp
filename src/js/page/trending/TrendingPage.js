@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 // import PropTypes from 'prop-types'
 import {
-  StyleSheet, View, DeviceEventEmitter, Image, Text,
+  StyleSheet, View, Image, Text,
   TouchableOpacity,
 } from 'react-native'
 // libs
@@ -50,16 +50,6 @@ export default class TrendingPage extends Component {
 
   componentDidMount = () => {
     this.initData()
-
-    this.listener = DeviceEventEmitter.addListener('update_TrendingPage_page_labels', () => {
-      this.initData()
-    })
-  }
-
-  componentWillUnmount = () => {
-    if (this.listener) {
-      this.listener.remove()
-    }
   }
 
   renderTitleView = () => {

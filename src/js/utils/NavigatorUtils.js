@@ -1,4 +1,4 @@
-import { NavigationActions } from 'react-navigation'
+import { NavigationActions, StackActions } from 'react-navigation'
 
 export default class NavigatorUtils {
   /**
@@ -7,7 +7,8 @@ export default class NavigatorUtils {
    */
   static resetToHomePage(params) {
     const { navigation, theme, selectedTab } = params
-    const resetAction = NavigationActions.reset({
+    // console.log('utils   ', selectedTab)
+    const resetAction = StackActions.reset({
       index: 0,
       actions: [
         NavigationActions.navigate({

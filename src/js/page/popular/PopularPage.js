@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 // import PropTypes from 'prop-types'
 import {
-  StyleSheet, View, DeviceEventEmitter,
+  StyleSheet, View,
 } from 'react-native'
 // libs
 import ScrollableTabView, { ScrollableTabBar } from 'react-native-scrollable-tab-view'
@@ -43,18 +43,7 @@ export default class Popular extends Component {
 
   componentDidMount = () => {
     this.initData()
-
-    this.listener = DeviceEventEmitter.addListener('update_popular_page_labels', () => {
-      this.initData()
-    })
   }
-
-  componentWillUnmount = () => {
-    if (this.listener) {
-      this.listener.remove()
-    }
-  }
-
 
   render() {
     const { languages } = this.state

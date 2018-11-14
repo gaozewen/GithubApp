@@ -22,9 +22,10 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
   },
-  line: {
-    height: 0.3,
-    backgroundColor: 'darkgray',
+  row: {
+    flexDirection: 'row',
+    borderBottomWidth: 0.3,
+    borderColor: 'darkgray',
   },
 })
 
@@ -36,11 +37,16 @@ export default class CustomKeyPage extends Component {
   constructor(props) {
     super(props)
     this.isRemoveKeyPage = props.navigation.getParam('isRemoveKeyPage', false) // RemovePage
-    this.languageDao = new LanguageDao(USE_IN.POPULAR) // 初始化 dao
+    this.use_in = props.navigation.getParam('useIn', USE_IN.POPULAR)
     this.changeValues = [] // 初始化改变的 checkbox
     this.state = {
       dataArray: [],
     }
+  }
+
+  componentDidMount = () => {
+    this.languageDao = new LanguageDao(this.use_in) // 初始化 dao
+    this.loadData() // 初始化页面数据
   }
 
   loadData = () => { // 初始话 页面数据
@@ -64,10 +70,6 @@ export default class CustomKeyPage extends Component {
       .catch((err) => {
         console.log(err)
       })
-  }
-
-  componentDidMount = () => {
-    this.loadData() // 初始化页面数据
   }
 
   isAllUnChecked = () => { // 判断是否只剩一个被选中
@@ -100,6 +102,7 @@ export default class CustomKeyPage extends Component {
       return
     }
     const { navigation } = this.props
+
     if (this.changeValues.length > 0) {
       if (this.isRemoveKeyPage) { // RemovePage
         this.changeValues.forEach((item) => {
@@ -109,8 +112,9 @@ export default class CustomKeyPage extends Component {
       } else {
         this.languageDao.save(this.state.dataArray)
       }
+      DeviceEventEmitter.emit('update_home')
+      return
     }
-    DeviceEventEmitter.emit('update_popular_page_labels')
     navigation.pop()
   }
 
@@ -152,21 +156,19 @@ export default class CustomKeyPage extends Component {
     for (let i = 0, l = len - 2; i < l; i += 2) {
       views.push(
         <View key={dataArray[i].name}>
-          <View style={{ flexDirection: 'row' }}>
+          <View style={styles.row}>
             {this.renderCheckBox(dataArray[i])}
             {this.renderCheckBox(dataArray[i + 1])}
           </View>
-          <View style={styles.line} />
         </View>,
       )
     }
     views.push( // 补上少的 2 个 或 1 个
       <View key={dataArray[len - 1].name}>
-        <View style={{ flexDirection: 'row' }}>
+        <View style={styles.row}>
           {len % 2 === 0 ? this.renderCheckBox(dataArray[len - 2]) : null}
           {this.renderCheckBox(dataArray[len - 1])}
         </View>
-        <View style={styles.line} />
       </View>,
     )
     return views
@@ -174,10 +176,12 @@ export default class CustomKeyPage extends Component {
 
   render() {
     const rightButtonTitle = this.isRemoveKeyPage ? '移除' : '保存' // RemovePage
+    let title = this.isRemoveKeyPage ? '标签移除' : '自定义标签'
+    title = this.use_in === USE_IN.TRENDING ? '自定义语言' : title
     return (
       <View style={styles.root}>
         <HeaderBar
-          title={this.isRemoveKeyPage ? '标签移除' : '自定义标签'}
+          title={title}
           leftButton={ViewUtils.getBackButton(() => { this.onBack() })}
           rightButton={ViewUtils.getRightButton(rightButtonTitle, () => { this.onSave(true) })}
         />

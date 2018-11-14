@@ -1,7 +1,7 @@
 # OSX
 #
 .DS_Store
-
+my-release-key.keystore
 # Xcode
 #
 build/

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {
-  StyleSheet, View, Text, TouchableOpacity, Alert,
+  StyleSheet, View, Text, TouchableOpacity, Alert, DeviceEventEmitter,
 } from 'react-native'
 // libs
 import SortableListView from 'react-native-sortable-listview'
@@ -28,7 +28,8 @@ export default class SortKeyPage extends Component {
 
   constructor(props) {
     super(props)
-    this.languageDao = new LanguageDao(USE_IN.POPULAR)
+    this.use_in = this.props.navigation.getParam('useIn', USE_IN.POPULAR)
+    this.languageDao = new LanguageDao(this.use_in)
     this.originalWholeArray = [] // ↓ 原始完整数组，用来做对比
     this.originalCheckedArray = [] // ↓ 原始的 被选中的 标签
     this.state = {
@@ -84,6 +85,8 @@ export default class SortKeyPage extends Component {
     if (isSorted || !ArrayUtils.isEqual(this.originalCheckedArray, sortingArray)) { // 排序了
       this.getSortedWholeArray(sortingArray) // 设置 排序后的 完整数组 序列
       this.languageDao.save(this.sortedWholeArray) // 保存最终排序到数据库
+      DeviceEventEmitter.emit('update_home')
+      return
     }
     navigation.pop()
   }
@@ -109,10 +112,11 @@ export default class SortKeyPage extends Component {
         </View>
       </TouchableOpacity>
     )
+    const title = this.use_in === USE_IN.POPULAR ? '标签排序' : '语言排序'
     return (
       <View style={styles.root}>
         <HeaderBar
-          title="标签排序"
+          title={title}
           sytle={{ backgroundColor: '#6495ED' }}
           leftButton={ViewUtils.getBackButton(() => { this.onBack() })}
           rightButton={rightButton}

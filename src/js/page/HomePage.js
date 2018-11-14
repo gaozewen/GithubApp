@@ -3,16 +3,15 @@ import PropTypes from 'prop-types'
 import {
   StyleSheet, View, Image, DeviceEventEmitter,
 } from 'react-native'
-
 // libs
 import TabNavigator from 'react-native-tab-navigator'
-
 // images
 import IMG_POPULAR from '../../assets/images/ic_polular.png'
 import IMG_TRENDING from '../../assets/images/ic_trending.png'
 import IMG_FAVORITE from '../../assets/images/ic_favorite.png'
 import IMG_MY from '../../assets/images/ic_my.png'
-
+// utils
+import NavigatorUtils from '../utils/NavigatorUtils'
 // pages
 import PopularPage from './popular/PopularPage'
 import TrendingPage from './trending/TrendingPage'
@@ -44,14 +43,20 @@ export default class HomePage extends Component {
 
   constructor(props) {
     super(props)
+    const selectedTab = this.props.navigation.getParam('selectedTab', 'tb_my')
     this.state = {
-      selectedTab: 'tb_trending', // 初始化 默认选中的 tab 页
+      selectedTab, // 初始化 默认选中的 tab 页
     }
   }
 
   componentDidMount = () => {
-    this.listener = DeviceEventEmitter.addListener('showToast', (text) => {
-      console.log(text)
+    // this.listener = DeviceEventEmitter.addListener('showToast', (text) => {
+    //   console.log(text)
+    // })
+    const { navigation } = this.props
+    const { selectedTab } = this.state
+    this.listener = DeviceEventEmitter.addListener('update_home', () => {
+      NavigatorUtils.resetToHomePage({ navigation, selectedTab })
     })
   }
 
