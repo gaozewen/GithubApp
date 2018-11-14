@@ -5,9 +5,10 @@ import {
 } from 'react-native'
 
 // libs
-import CheckBox from 'react-native-check-box'
+// import CheckBox from 'react-native-check-box'
 // common
 import HeaderBar from '../../common/HeaderBar'
+import CheckBox from '../../common/CheckBox'
 // utils
 import ViewUtils from '../../utils/ViewUtils'
 import ArrayUtils from '../../utils/ArrayUtils'
@@ -118,18 +119,15 @@ export default class CustomKeyPage extends Component {
     navigation.pop()
   }
 
-  toggleCheckbox = (item) => {
+  changeItemValue = (item) => {
+    // 改变原始数组中元素的值，
+    // 因为会根据 this.changeValues 是否有值
+    // 从而来 进行 save 操作 保存的是 this.state.dataArray
     item.checked = !item.checked
-    this.forceUpdate() // 强制刷新
-    // this.setState((state) => {
-    //   return {
-    //     dataArray: [...state.dataArray],
-    //   }
-    // })
   }
 
   onClick = (item) => {
-    this.toggleCheckbox(item)
+    this.changeItemValue(item)
     ArrayUtils.updateArray(this.changeValues, item) // 更新 发生变化的checkbox数组
   }
 

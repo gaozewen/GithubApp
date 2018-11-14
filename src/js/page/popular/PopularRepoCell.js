@@ -6,6 +6,7 @@ import {
 } from 'react-native'
 
 // imgs
+import IMG_UNSTAR from '../../../assets/images/ic_unstar_transparent.png'
 import IMG_STAR from '../../../assets/images/ic_star.png'
 
 const styles = StyleSheet.create({
@@ -57,6 +58,9 @@ const styles = StyleSheet.create({
   star: {
     width: 22,
     height: 22,
+    marginTop: 22,
+    marginLeft: 22,
+    tintColor: '#2196F3',
   },
 })
 
@@ -66,9 +70,43 @@ export default class PopularRepoCell extends Component {
     onSelect: PropTypes.func,
   }
 
+  constructor(props) {
+    super(props)
+    this.state = {
+      isCollected: false,
+      collectionIcon: IMG_UNSTAR,
+    }
+  }
+
   componentDidMount = () => {
 
   }
+
+  setCollectionState = (isCollected) => {
+    this.setState({
+      isCollected,
+      collectionIcon: isCollected ? IMG_STAR : IMG_UNSTAR,
+    })
+  }
+
+  onToggleCollection = () => {
+    this.setCollectionState(!this.state.isCollected)
+  }
+
+  renderCollectionButton = () => {
+    const { collectionIcon } = this.state
+    return (
+      <TouchableOpacity
+        style={{
+          position: 'absolute', bottom: 0, right: 0, width: 54, height: 54,
+        }}
+        onPress={() => this.onToggleCollection()}
+      >
+        <Image style={styles.star} source={collectionIcon} />
+      </TouchableOpacity>
+    )
+  }
+
 
   render() {
     const { data, onSelect } = this.props
@@ -95,10 +133,10 @@ export default class PopularRepoCell extends Component {
               <Text style={{ color: '#757575' }}>Stars：</Text>
               <Text style={{ color: '#2196F3' }}>{data.stargazers_count}</Text>
             </View>
-
-            <Image style={styles.star} source={IMG_STAR} />
+            <View style={{ width: 22, height: 22 }} />
 
           </View>
+          {this.renderCollectionButton()}
 
         </View>
 
