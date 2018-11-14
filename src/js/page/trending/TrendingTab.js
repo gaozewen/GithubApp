@@ -6,8 +6,8 @@ import {
 } from 'react-native'
 
 // dao
-import DataRepository, { USE_IN } from '../../expand/dao/DataRepository'
-
+import GitHubRepoDao, { USE_IN } from '../../expand/dao/GitHubRepoDao'
+// import CollectionDao from '../../expand/dao/CollectionDao'
 // components
 import TrendingRepoCell from './TrendingRepoCell'
 
@@ -25,7 +25,7 @@ const DATA_TYPE = {
   REFRESHING: 'pull down refreshing',
   MORE: 'fetch more',
 }
-
+// const CollectionDao = new CollectionDao(USE_IN.TRENDING)
 export default class TrendingTab extends Component {
   static propTypes = {
     navigation: PropTypes.object,
@@ -34,7 +34,7 @@ export default class TrendingTab extends Component {
 
   constructor(props) {
     super(props)
-    this.dataRepository = new DataRepository(USE_IN.TRENDING)
+    this.GitHubRepoDao = new GitHubRepoDao(USE_IN.TRENDING)
     this.state = {
       // 重复数据不渲染
       dataSource: new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 }),
@@ -70,7 +70,7 @@ export default class TrendingTab extends Component {
 
     const { dataSource } = this.state
     const { tabLabel } = this.props // 上面组件传过来的 timespan
-    const { fetchRepository, fetchNetRepository } = this.dataRepository
+    const { fetchRepository, fetchNetRepository } = this.GitHubRepoDao
 
     const reqUrl = this.getFetchUrl(timespan, tabLabel)
     let items = []

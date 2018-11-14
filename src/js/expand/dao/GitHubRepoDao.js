@@ -7,7 +7,7 @@ export const USE_IN = {
   POPULAR: 'use_in_popular_page',
   TRENDING: 'use_in_tending_page',
 }
-export default class DataRepository {
+export default class GitHubRepoDao {
   constructor(whichPageUse) {
     this.use_in = whichPageUse
     if (whichPageUse === USE_IN.TRENDING) this.trending = new GitHubTrending()
@@ -17,7 +17,7 @@ export default class DataRepository {
    * 获取 github 仓库数据
    *
    * @param {} url
-   * @memberof DataRepository
+   * @memberof GitHubRepoDao
    */
   fetchRepository = async (url) => {
     const local = await this.fetchLocalRepository(url)
@@ -30,7 +30,7 @@ export default class DataRepository {
    * 获取 github 离线缓存的数据
    *
    * @param {*} url
-   * @memberof DataRepository
+   * @memberof GitHubRepoDao
    */
   fetchLocalRepository = (url) => {
     return new Promise((resolve, reject) => {
@@ -53,7 +53,7 @@ export default class DataRepository {
    *
    * @param {*} url
    * @returns
-   * @memberof DataRepository
+   * @memberof GitHubRepoDao
    */
   fetchNetRepository = (url) => {
     return new Promise((resolve, reject) => {
@@ -89,7 +89,7 @@ export default class DataRepository {
    * @param {*} url
    * @param {*} items
    * @param {*} callback
-   * @memberof DataRepository
+   * @memberof GitHubRepoDao
    */
   saveRespositoryToLocal = (url, items, callback) => {
     if (!url || !items || !url.includes('per_page=20')) return // 不是第一页就 返回

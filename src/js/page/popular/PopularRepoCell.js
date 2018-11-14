@@ -66,15 +66,17 @@ const styles = StyleSheet.create({
 
 export default class PopularRepoCell extends Component {
   static propTypes = {
-    data: PropTypes.object,
-    onSelect: PropTypes.func,
+    repoCell: PropTypes.object,
+    onSelect: PropTypes.func, // 点击 小卡片
+    onCollect: PropTypes.func, // 点击 小星星
   }
 
   constructor(props) {
     super(props)
+    const { isCollected } = this.props.repoCell
     this.state = {
-      isCollected: false,
-      collectionIcon: IMG_UNSTAR,
+      isCollected,
+      collectionIcon: isCollected ? IMG_STAR : IMG_UNSTAR,
     }
   }
 
@@ -89,49 +91,51 @@ export default class PopularRepoCell extends Component {
     })
   }
 
-  onToggleCollection = () => {
+  onPressHandler = () => {
     this.setCollectionState(!this.state.isCollected)
+    // 调用 props 传进来的方法，将 收藏状态传递出去
+    this.props.onCollect(this.props.repoCell.item, !this.state.isCollected)
   }
 
   renderCollectionButton = () => {
-    const { collectionIcon } = this.state
     return (
       <TouchableOpacity
         style={{
           position: 'absolute', bottom: 0, right: 0, width: 54, height: 54,
         }}
-        onPress={() => this.onToggleCollection()}
+        onPress={() => this.onPressHandler()}
       >
-        <Image style={styles.star} source={collectionIcon} />
+        <Image style={styles.star} source={this.state.collectionIcon} />
       </TouchableOpacity>
     )
   }
 
 
   render() {
-    const { data, onSelect } = this.props
+    const { repoCell, onSelect } = this.props
+    const { item } = repoCell
     return (
       <TouchableOpacity
         style={styles.root}
-        onPress={() => onSelect(data)}
+        onPress={() => onSelect(item)}
       >
 
         <View style={styles.cell_container}>
 
-          <Text style={styles.title}>{data.full_name}</Text>
+          <Text style={styles.title}>{item.full_name}</Text>
 
-          <Text style={styles.desc}>{data.description}</Text>
+          <Text style={styles.desc}>{item.description}</Text>
 
           <View style={styles.bottom}>
 
             <View style={styles.bottom_item}>
               <Text style={{ color: '#757575' }}>Author：</Text>
-              <Image style={styles.avatar} source={{ uri: data.owner.avatar_url }} />
+              <Image style={styles.avatar} source={{ uri: item.owner.avatar_url }} />
             </View>
 
             <View style={styles.bottom_item}>
               <Text style={{ color: '#757575' }}>Stars：</Text>
-              <Text style={{ color: '#2196F3' }}>{data.stargazers_count}</Text>
+              <Text style={{ color: '#2196F3' }}>{item.stargazers_count}</Text>
             </View>
             <View style={{ width: 22, height: 22 }} />
 
