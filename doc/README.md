@@ -10,6 +10,21 @@ utils           工具
 
 - react-native init MyApp --version 0.43.0-rc.2
 
+
+
+
+# 打包apk
+- react-native run-android --variant=release
+- adb shell input keyevent 82
+
+
+
+
+
+
+
+
+
 # 如何规范项目代码
 
 - https://www.npmjs.com/package/eslint-config-airbnb
@@ -18,8 +33,8 @@ utils           工具
 - http://t.cn/RtE9SS3
 
 # 模拟器下载
-
 - https://www.genymotion.com/download/
+
 
 # 连接模拟器
     ctrl + m

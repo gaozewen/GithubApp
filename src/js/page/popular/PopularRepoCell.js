@@ -84,6 +84,12 @@ export default class PopularRepoCell extends Component {
 
   }
 
+  componentWillReceiveProps = (nextProps) => {
+    if (this.state.isCollected !== nextProps.repoCell.isCollected) {
+      this.setCollectionState(nextProps.repoCell.isCollected)
+    }
+  }
+
   setCollectionState = (isCollected) => {
     this.setState({
       isCollected,

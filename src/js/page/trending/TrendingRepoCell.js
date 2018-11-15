@@ -7,6 +7,7 @@ import {
 // libs
 import HTMLView from 'react-native-htmlview'
 // imgs
+import IMG_UNSTAR from '../../../assets/images/ic_unstar_transparent.png'
 import IMG_STAR from '../../../assets/images/ic_star.png'
 
 const styles = StyleSheet.create({
@@ -58,54 +59,101 @@ const styles = StyleSheet.create({
   star: {
     width: 22,
     height: 22,
+    marginTop: 22,
+    marginLeft: 22,
+    tintColor: '#2196F3',
   },
 })
 
 export default class TrendingRepoCell extends Component {
   static propTypes = {
-    data: PropTypes.object,
-    onSelect: PropTypes.func,
+    repoCell: PropTypes.object,
+    onSelect: PropTypes.func, // 点击 小卡片
+    onCollect: PropTypes.func, // 点击 小星星
+  }
+
+  constructor(props) {
+    super(props)
+    const { isCollected } = this.props.repoCell
+    this.state = {
+      isCollected,
+      collectionIcon: isCollected ? IMG_STAR : IMG_UNSTAR,
+    }
   }
 
   componentDidMount = () => {
 
   }
 
+  componentWillReceiveProps = (nextProps) => {
+    if (this.state.isCollected !== nextProps.repoCell.isCollected) {
+      this.setCollectionState(nextProps.repoCell.isCollected)
+    }
+  }
+
+  setCollectionState = (isCollected) => {
+    this.setState({
+      isCollected,
+      collectionIcon: isCollected ? IMG_STAR : IMG_UNSTAR,
+    })
+  }
+
+  onPressHandler = () => {
+    this.setCollectionState(!this.state.isCollected)
+    // 调用 props 传进来的方法，将 收藏状态传递出去
+    this.props.onCollect(this.props.repoCell.item, !this.state.isCollected)
+  }
+
+  renderCollectionButton = () => {
+    return (
+      <TouchableOpacity
+        style={{
+          position: 'absolute', bottom: 0, right: 0, width: 54, height: 54,
+        }}
+        onPress={() => this.onPressHandler()}
+      >
+        <Image style={styles.star} source={this.state.collectionIcon} />
+      </TouchableOpacity>
+    )
+  }
+
   render() {
-    const { data, onSelect } = this.props
+    const { repoCell, onSelect } = this.props
+    const { item } = repoCell
     return (
       <TouchableOpacity
         style={styles.root}
-        onPress={() => onSelect(data)}
+        onPress={() => onSelect(item)}
       >
 
         <View style={styles.cell_container}>
 
-          <Text style={styles.title}>{data.fullName}</Text>
+          <Text style={styles.title}>{item.fullName}</Text>
 
           <HTMLView
-            value={`<p>${data.description}</p>`}
+            value={`<p>${item.description}</p>`}
             FonLinkLongPress={() => { }}
             stylesheet={{ p: styles.desc, a: styles.desc }}
           />
 
-          <Text style={{ color: '#2196F3', marginBottom: 6 }}>{data.meta}</Text>
+          <Text style={{ color: '#2196F3', marginBottom: 6 }}>{item.meta}</Text>
 
           <View style={styles.bottom}>
 
             <View style={styles.bottom_item}>
               <Text style={{ color: '#757575' }}>Build by：</Text>
               {
-                data.contributors
-                  .map(item => (<Image key={item} style={styles.avatar} source={{ uri: item }} />))
+                item.contributors
+                  .map(imgUri => (
+                    <Image key={imgUri} style={styles.avatar} source={{ uri: imgUri }} />))
               }
 
             </View>
 
-            <Image style={styles.star} source={IMG_STAR} />
-
+            {/* <Image style={styles.star} source={IMG_STAR} /> */}
+            <View style={{ width: 22, height: 22 }} />
           </View>
-
+          {this.renderCollectionButton()}
         </View>
 
       </TouchableOpacity>

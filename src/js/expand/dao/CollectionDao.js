@@ -46,7 +46,7 @@ export default class CollectionDao {
   collect(key, value, callback) {
     AsyncStorage.setItem(key, value, (error) => {
       if (!error) {
-        this.updateCollectionKeys(key, OP.ADD)
+        this.updateCollectionKeys(key, OP.ADD, callback)
       }
     })
   }
@@ -61,7 +61,7 @@ export default class CollectionDao {
   unCollect(key, callback) {
     AsyncStorage.removeItem(key, (error) => {
       if (!error) {
-        this.updateCollectionKeys(key, OP.DELETE)
+        this.updateCollectionKeys(key, OP.DELETE, callback)
       }
     })
   }
@@ -71,9 +71,10 @@ export default class CollectionDao {
    *
    * @param {String} key 项目id/name
    * @param {*} op 增加(OP.ADD)或删除(OP.DELETE)
+   * @param {Function} callback
    * @memberof CollectionDao
    */
-  updateCollectionKeys(key, op) {
+  updateCollectionKeys(key, op, callback) {
     // 获取用户收藏的所有 项目集合
     AsyncStorage.getItem(this.keyOfCollectionKeys, (error, result) => {
       if (!error) {
@@ -87,7 +88,11 @@ export default class CollectionDao {
         } else if (op === OP.DELETE) { // 删除 key
           if (index !== -1) keys.splice(index, 1)
         }
-        AsyncStorage.setItem(this.keyOfCollectionKeys, JSON.stringify(keys))
+        AsyncStorage.setItem(this.keyOfCollectionKeys, JSON.stringify(keys), () => {
+          if (callback) {
+            callback()
+          }
+        })
       }
     })
   }

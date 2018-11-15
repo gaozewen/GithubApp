@@ -56,8 +56,17 @@ export default class Popular extends Component {
           tabBarUnderlineStyle={{ backgroundColor: '#e7e7e7', height: 2, marginVertical: 1 }}
           renderTabBar={() => <ScrollableTabBar />}
         >
-          {languages.map(item => (item.checked
-            ? <PopularTab key={item.name} tabLabel={item.name} {...this.props} /> : null))}
+          {
+            languages.map(item => (item.checked
+              ? (
+                <PopularTab
+                  key={item.name}
+                  tabLabel={item.name}
+                  {...this.props}
+                />
+              )
+              : null))
+          }
         </ScrollableTabView>
       )
       : null

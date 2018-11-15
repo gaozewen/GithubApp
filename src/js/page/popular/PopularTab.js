@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import {
   StyleSheet, View,
   ListView, RefreshControl,
+  // DeviceEventEmitter,
 } from 'react-native'
 // dao
 import GitHubRepoDao, { USE_IN } from '../../expand/dao/GitHubRepoDao'
@@ -14,24 +15,23 @@ import RepoCell from '../../expand/model/RepoCell'
 // utils
 import CheckUtils from '../../utils/CheckUtils'
 
-
-// https://api.github.com/search/repositories?q=ios&sort=stars
-const URL = 'https://api.github.com/search/repositories?q='
-const QUERY_STR = '&sort=stars&page=1&per_page='
-
 const styles = StyleSheet.create({
   root: {
     flex: 1,
   },
 })
 
+// https://api.github.com/search/repositories?q=ios&sort=stars
+const URL = 'https://api.github.com/search/repositories?q='
+const QUERY_STR = '&sort=stars&page=1&per_page='
 const DATA_TYPE = {
   INIT: 'init data',
   REFRESHING: 'pull down refreshing',
   MORE: 'fetch more',
 }
 // 为什么设置为全局，是因为 在所有的 页签下都能使用，无需为 每个页签重复创建
-const collectionDao = new CollectionDao(USE_IN.TRENDING)
+const gitHubRepoDao = new GitHubRepoDao(USE_IN.POPULAR)
+const collectionDao = new CollectionDao(USE_IN.POPULAR)
 export default class PopularTab extends Component {
   static propTypes = {
     navigation: PropTypes.object,
@@ -39,7 +39,6 @@ export default class PopularTab extends Component {
 
   constructor(props) {
     super(props)
-    this.GitHubRepoDao = new GitHubRepoDao(USE_IN.POPULAR)
     this.state = {
       // 重复数据不渲染
       dataSource: new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 }),
@@ -51,12 +50,23 @@ export default class PopularTab extends Component {
 
   componentDidMount = () => {
     this.loadData(DATA_TYPE.INIT)
+    // this.listener = DeviceEventEmitter.addListener('collection_update', () => {
+    //   this.loadData(DATA_TYPE.INIT)
+    // })
+  }
+
+  componentWillUnmount = () => {
+    // if (this.listener) {
+    //   this.listener.remove()
+    // }
   }
 
   getCollectionKeys = async () => {
     const keys = await collectionDao.getCollectionKeys().catch(() => { })
     if (keys && keys.length > 0) {
       this.setState({ collectionKeys: keys })
+    } else {
+      this.setState({ collectionKeys: [] })
     }
   }
 
@@ -68,7 +78,7 @@ export default class PopularTab extends Component {
 
     const { dataSource, currentPage } = this.state
     const { tabLabel } = this.props
-    const { fetchRepository, fetchNetRepository } = this.GitHubRepoDao
+    const { fetchRepository, fetchNetRepository } = gitHubRepoDao
 
     let reqUrl = URL + tabLabel + QUERY_STR + currentPage * 20
     let items = []
@@ -103,6 +113,7 @@ export default class PopularTab extends Component {
   }
 
   onCollect = (item, isCollected) => { // 点击小星星 callback
+    // const callback = () => DeviceEventEmitter.emit('collection_update')
     if (isCollected) { // 收藏，保存到数据库
       collectionDao.collect(item.id.toString(), JSON.stringify(item))
       return
