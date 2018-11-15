@@ -15,6 +15,7 @@ import NavigatorUtils from '../utils/NavigatorUtils'
 // pages
 import PopularPage from './popular/PopularPage'
 import TrendingPage from './trending/TrendingPage'
+import FavoritePage from './favorite/FavoritePage'
 import MyPage from './my/MyPage'
 
 const styles = StyleSheet.create({
@@ -99,7 +100,7 @@ export default class HomePage extends Component {
         <TabNavigator>
           {this.renderTabItem(PopularPage, 'tb_popular', '最热', IMG_POPULAR)}
           {this.renderTabItem(TrendingPage, 'tb_trending', '趋势', IMG_TRENDING)}
-          {this.renderTabItem(MyPage, 'tb_favorite', '收藏', IMG_FAVORITE)}
+          {this.renderTabItem(FavoritePage, 'tb_favorite', '收藏', IMG_FAVORITE)}
           {this.renderTabItem(MyPage, 'tb_my', '我的', IMG_MY)}
         </TabNavigator>
       </View>

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {
   StyleSheet, View,
   ListView, RefreshControl,
-  // DeviceEventEmitter,
+  DeviceEventEmitter,
 } from 'react-native'
 // dao
 import GitHubRepoDao, { USE_IN } from '../../expand/dao/GitHubRepoDao'
@@ -14,6 +14,8 @@ import PopularRepoCell from './PopularRepoCell'
 import RepoCell from '../../expand/model/RepoCell'
 // utils
 import CheckUtils from '../../utils/CheckUtils'
+// constants
+import EmitActions from '../../constants/EmitActions'
 
 const styles = StyleSheet.create({
   root: {
@@ -46,19 +48,40 @@ export default class PopularTab extends Component {
       currentPage: 1, // 当前页
       collectionKeys: [], // 所有用户收藏项目的 keys
     }
+    this.items = []
+    this.isNeedSync = false // 是否需要同步数据
   }
 
   componentDidMount = () => {
     this.loadData(DATA_TYPE.INIT)
-    // this.listener = DeviceEventEmitter.addListener('collection_update', () => {
-    //   this.loadData(DATA_TYPE.INIT)
-    // })
+    this.listener = DeviceEventEmitter.addListener(EmitActions.SYNC_POPULAR_PAGE, () => {
+      this.isNeedSync = true
+    })
   }
 
   componentWillUnmount = () => {
-    // if (this.listener) {
-    //   this.listener.remove()
-    // }
+    if (this.listener) {
+      this.listener.remove()
+    }
+  }
+
+  componentWillReceiveProps = () => {
+    if (this.isNeedSync) {
+      this.isNeedSync = false
+      this.syncingData()
+    }
+  }
+
+  syncingData = async () => { // 同步 数据
+    await this.getCollectionKeys() // 初始化 收藏 keys
+    const { dataSource } = this.state
+    const repoCellArray = [] // 将数据转化为 model
+    this.items.forEach(item => repoCellArray.push(
+      new RepoCell(item, CheckUtils.checkIsCollected(item, this.state.collectionKeys)),
+    ))
+    this.setState({
+      dataSource: dataSource.cloneWithRows(repoCellArray),
+    })
   }
 
   getCollectionKeys = async () => {
@@ -74,37 +97,27 @@ export default class PopularTab extends Component {
     if (this.state.isLoading) return
     this.setState({ isLoading: true }) // lock
 
-    await this.getCollectionKeys() // 初始化 收藏 keys
-
-    const { dataSource, currentPage } = this.state
+    const { currentPage } = this.state
     const { tabLabel } = this.props
     const { fetchRepository, fetchNetRepository } = gitHubRepoDao
 
     let reqUrl = URL + tabLabel + QUERY_STR + currentPage * 20
-    let items = []
     if (dataType === DATA_TYPE.INIT) { // 初始化
-      items = await fetchRepository(reqUrl).catch(err => console.log(err))
+      this.items = await fetchRepository(reqUrl).catch(err => console.log(err))
     } else if (dataType === DATA_TYPE.REFRESHING) { // 刷新数据
       this.setState({ currentPage: 1 })
       reqUrl = URL + tabLabel + QUERY_STR + 20
-      items = await fetchNetRepository(reqUrl).catch(err => console.log(err))
+      this.items = await fetchNetRepository(reqUrl).catch(err => console.log(err))
     } else if (dataType === DATA_TYPE.MORE) { // 加载更多
-      items = await fetchNetRepository(reqUrl).catch(err => console.log(err))
+      this.items = await fetchNetRepository(reqUrl).catch(err => console.log(err))
     }
 
-    if (items && items.length > 0) {
-      const repoCellArray = [] // 将数据转化为 model
-      items.forEach(item => repoCellArray.push(
-        new RepoCell(item, CheckUtils.checkIsCollected(item, this.state.collectionKeys)),
-      ))
-      this.setState({
-        isLoading: false, // 获取最新数据 unLock
-        dataSource: dataSource.cloneWithRows(repoCellArray),
-        currentPage: (currentPage < 100 ? currentPage + 1 : 1),
-      })
-      return
-    }
-    this.setState({ isLoading: false })
+    await this.syncingData() // 比对 keys 同步 收藏状态
+
+    this.setState({
+      isLoading: false, // 获取最新数据 unLock
+      currentPage: (currentPage < 100 ? currentPage + 1 : 1),
+    })
   }
 
   /**
@@ -133,7 +146,6 @@ export default class PopularTab extends Component {
   }
 
   onCollect = (item, isCollected) => { // 点击小星星 callback
-    // const callback = () => DeviceEventEmitter.emit('collection_update')
     if (isCollected) { // 收藏，保存到数据库
       collectionDao.collect(item.id.toString(), JSON.stringify(item))
     } else { // 取消收藏，删除数据库中数据

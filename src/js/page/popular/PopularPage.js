@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
   },
 })
 
-export default class Popular extends Component {
+export default class PopularPage extends Component {
   static propTypes = {
 
   }

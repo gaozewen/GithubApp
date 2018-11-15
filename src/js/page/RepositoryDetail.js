@@ -34,7 +34,8 @@ export default class RepositoryDetail extends Component {
     const url = this.item.html_url || (TRENDING_URL + title)
 
     this.isCollected = this.props.navigation.getParam('isCollected', false)
-    this.syncCellStarState = this.props.navigation.getParam('syncCellStarState')
+    this.syncCellStarState = this.props.navigation.getParam('syncCellStarState', null)
+    this.syncFavoritePage = this.props.navigation.getParam('syncFavoritePage', null)
     this.state = {
       title,
       url,
@@ -72,9 +73,15 @@ export default class RepositoryDetail extends Component {
   }
 
   onCollectionIconHandler = () => { // 处理 收藏按钮 点击事件
-    this.setCollectionState(!this.state.isCollected) // 迅速渲染详情页 小星星 图标
-    this.onCollect(this.item, !this.state.isCollected) // 将收藏状态 及信息 保存到数据库
-    this.syncCellStarState(!this.state.isCollected) // 同步更新 RepoCell 的 收藏状态
+    const isCollected = !this.state.isCollected
+    this.setCollectionState(isCollected) // 迅速渲染详情页 小星星 图标
+    this.onCollect(this.item, isCollected) // 将收藏状态 及信息 保存到数据库
+    if (this.syncCellStarState) {
+      this.syncCellStarState(isCollected) // 同步更新 RepoCell 的 收藏状态
+    }
+    if (this.syncFavoritePage) {
+      this.syncFavoritePage(isCollected) // 同步更新 收藏页
+    }
   }
 
   onCollect = (item, isCollected) => { // 点击小星星 callback

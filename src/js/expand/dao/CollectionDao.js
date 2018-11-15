@@ -14,6 +14,37 @@ export default class CollectionDao {
   }
 
   /**
+  * 获取用户在 (Popular/Trending) 收藏的所有 仓库
+  *
+  * @memberof CollectionDao
+  */
+  getCollectionItems() {
+    return new Promise((resolve, reject) => {
+      this.getCollectionKeys()
+        .then((keys) => {
+          const items = []
+          if (keys && keys.length > 0) { // 数据库中有收藏信息
+            AsyncStorage.multiGet(keys, (errArray, resultArray) => {
+              try {
+                resultArray.forEach((item) => {
+                  // key:   item[0] - 20673212
+                  // value: item[1] - "{"id":3100121,"node_id":"MDEwO...""
+                  if (item[1]) items.push(JSON.parse(item[1]))
+                })
+                resolve(items)
+              } catch (error) {
+                reject(error)
+              }
+            })
+          } else { // 数据库中没有收藏信息
+            resolve(items)
+          }
+        })
+        .catch(err => reject(err))
+    })
+  }
+
+  /**
    * Get All Keys Of CollectionItems
    *
    * @returns
