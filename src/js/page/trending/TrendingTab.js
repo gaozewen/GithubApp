@@ -109,28 +109,38 @@ export default class TrendingTab extends Component {
     this.setState({ isLoading: false })
   }
 
-  onSelect = (item) => {
-    const { navigation } = this.props
-    navigation.navigate('RepositoryDetail', { item })
-  }
 
-  onCollect = (item, isCollected) => { // 点击小星星 callback
-    if (isCollected) { // 收藏，保存到数据库
-      collectionDao.collect(item.fullName.toString(), JSON.stringify(item))
-      return
-    }
-    // 取消收藏，删除数据库中数据
-    collectionDao.unCollect(item.fullName.toString())
+  /**
+   * 选中 RepoCell 进入详情页面
+   *
+   * @param {*} item RepoCell 信息
+   * @param {Boolean} isCollected RepoCell 中的 收藏状态
+   * @param {Function} syncCellStarState (传入 detail 页 收藏状态)用来更新 RepoCell 收藏状态的方法
+   * @memberof TrendingTab
+   */
+  onSelect = (item, isCollected, syncCellStarState) => {
+    const { navigation } = this.props
+    navigation.navigate('RepositoryDetail', { item, isCollected, syncCellStarState })
   }
 
   renderRow = (repoCell) => {
     return (
       <TrendingRepoCell
         repoCell={repoCell}
-        onSelect={(item) => { this.onSelect(item) }}
+        onSelect={(item, isCollected, syncCellStarState) => {
+          this.onSelect(item, isCollected, syncCellStarState)
+        }}
         onCollect={(item, isCollected) => { this.onCollect(item, isCollected) }}
       />
     )
+  }
+
+  onCollect = (item, isCollected) => { // 点击小星星 callback
+    if (isCollected) { // 收藏，保存到数据库
+      collectionDao.collect(item.fullName.toString(), JSON.stringify(item))
+    } else { // 取消收藏，删除数据库中数据
+      collectionDao.unCollect(item.fullName.toString())
+    }
   }
 
   render() {

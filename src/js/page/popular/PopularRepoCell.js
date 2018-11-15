@@ -120,10 +120,12 @@ export default class PopularRepoCell extends Component {
   render() {
     const { repoCell, onSelect } = this.props
     const { item } = repoCell
+    const { isCollected } = this.state
     return (
       <TouchableOpacity
         style={styles.root}
-        onPress={() => onSelect(item)}
+        // this.setCollectionState 用来在 详情页面 改变收藏 状态后，同步更新 popular 页面的收藏状态
+        onPress={() => onSelect(item, isCollected, this.setCollectionState)}
       >
 
         <View style={styles.cell_container}>
