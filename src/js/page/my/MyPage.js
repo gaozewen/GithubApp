@@ -57,6 +57,10 @@ export default class MyPage extends Component {
     let routeName
     let params
     switch (navigateTo) {
+      case MENU.About:
+        routeName = 'AboutPage'
+        params = {}
+        break
       case MENU.Custom_Key:
         routeName = 'CustomKeyPage'
         params = { useIn: USE_IN.POPULAR }
@@ -95,7 +99,7 @@ export default class MyPage extends Component {
 
   renderLogo = () => {
     return (
-      <TouchableHighlight onPress={() => this.onClick()}>
+      <TouchableHighlight onPress={() => this.onClick(MENU.About)}>
         <View style={styles.logo}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Image

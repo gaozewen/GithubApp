@@ -21,7 +21,8 @@ import MyPage from './my/MyPage'
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5FCFF',
+    // backgroundColor: '#F5FCFF',
+    backgroundColor: '#f3f3f4',
   },
   image: {
     height: 22,

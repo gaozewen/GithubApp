@@ -13,6 +13,7 @@ import HomePage from '../page/HomePage'
 import CustomKeyPage from '../page/my/CustomKeyPage'
 import SortKeyPage from '../page/my/SortKeyPage'
 import RepositoryDetail from '../page/RepositoryDetail'
+import AboutPage from '../page/about/AboutPage'
 
 const AppNavigator = StackNavigator(
   {
@@ -22,6 +23,7 @@ const AppNavigator = StackNavigator(
     CustomKeyPage: { screen: CustomKeyPage },
     SortKeyPage: { screen: SortKeyPage },
     RepositoryDetail: { screen: RepositoryDetail },
+    AboutPage: { screen: AboutPage },
   },
   {
     navigationOptions: {
