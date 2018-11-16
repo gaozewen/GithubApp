@@ -1,16 +1,45 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {
-  StyleSheet, View, Text,
+  StyleSheet, View, Text, ScrollView, TouchableHighlight, Image,
 } from 'react-native'
 // commons
 import HeaderBar from '../../common/HeaderBar'
 // dao
 import { USE_IN } from '../../expand/dao/LanguageDao'
+// imgs
+import IMG_TRENDING from '../../../assets/images/ic_trending.png'
+import IMG_TIAOZHUAN from '../../../assets/images/ic_tiaozhuan.png'
+// constants
+import { MENU } from '../../constants/Menu'
+// utils
+import ViewUtils from '../../utils/ViewUtils'
 
 const styles = StyleSheet.create({
   root: {
     flex: 1,
+    backgroundColor: '#f3f3f4',
+  },
+  logo: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+    height: 90,
+    backgroundColor: '#fff',
+    borderBottomWidth: 0.3,
+    borderBottomColor: 'darkgray',
+  },
+  groupTitle: {
+    marginLeft: 10,
+    marginTop: 10,
+    marginBottom: 5,
+    fontSize: 12,
+    color: '#757575',
+  },
+  extraLine: {
+    borderBottomWidth: 0.3,
+    borderBottomColor: 'darkgray',
   },
 })
 
@@ -23,51 +52,91 @@ export default class MyPage extends Component {
 
   }
 
-  render() {
+  onClick = (navigateTo) => {
     const { navigation } = this.props
+    let routeName
+    let params
+    switch (navigateTo) {
+      case MENU.Custom_Key:
+        routeName = 'CustomKeyPage'
+        params = { useIn: USE_IN.POPULAR }
+        break
+      case MENU.Sort_Key:
+        routeName = 'SortKeyPage'
+        params = { useIn: USE_IN.POPULAR }
+        break
+      case MENU.Remove_Key:
+        routeName = 'CustomKeyPage'
+        params = { isRemoveKeyPage: true, useIn: USE_IN.POPULAR }
+        break
+      case MENU.Custom_Language:
+        routeName = 'CustomKeyPage'
+        params = { useIn: USE_IN.TRENDING }
+        break
+      case MENU.Sort_Language:
+        routeName = 'SortKeyPage'
+        params = { useIn: USE_IN.TRENDING }
+        break
+      case MENU.Custom_Theme:
+        break
+      case MENU.About_Author:
+        break
+      default:
+        break
+    }
+    if (routeName) {
+      navigation.navigate(routeName, params)
+    }
+  }
+
+  getItem(tag, icon, text) {
+    return ViewUtils.getSettingItem(() => this.onClick(tag), icon, text, { tintColor: '#2196F3' })
+  }
+
+  renderLogo = () => {
+    return (
+      <TouchableHighlight onPress={() => this.onClick()}>
+        <View style={styles.logo}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Image
+              source={IMG_TRENDING}
+              style={[{ width: 40, height: 40, marginRight: 10 }, { tintColor: '#2196F3' }]}
+            />
+            <Text style={{ color: '#757575' }}>GitHub Popular</Text>
+          </View>
+          <Image
+            source={IMG_TIAOZHUAN}
+            style={[{ marginRight: 10, height: 22, width: 22 }, { tintColor: '#2196F3' }]}
+          />
+        </View>
+      </TouchableHighlight>
+    )
+  }
+
+  render() {
     return (
       <View style={styles.root}>
         <HeaderBar
           title="我的"
+          sytle={{ backgroundColor: '#2196F3' }}
         />
-        <Text
-          onPress={() => {
-            navigation.navigate('CustomKeyPage', { useIn: USE_IN.POPULAR })
-          }}
-        >
-          自定义标签页
-        </Text>
-        <Text
-          onPress={() => {
-            navigation.navigate('SortKeyPage', { useIn: USE_IN.POPULAR })
-          }}
-        >
-          已订阅标签排序页
-        </Text>
-        <Text
-          onPress={() => {
-            navigation.navigate('CustomKeyPage', {
-              isRemoveKeyPage: true,
-              useIn: USE_IN.POPULAR,
-            })
-          }}
-        >
-          标签移除页
-        </Text>
-        <Text
-          onPress={() => {
-            navigation.navigate('CustomKeyPage', { useIn: USE_IN.TRENDING })
-          }}
-        >
-          自定义标语言
-        </Text>
-        <Text
-          onPress={() => {
-            navigation.navigate('SortKeyPage', { useIn: USE_IN.TRENDING })
-          }}
-        >
-          语言排序
-        </Text>
+        <ScrollView>
+          {/* Logo */}
+          {this.renderLogo()}
+          {/* 最热管理 */}
+          <View style={styles.extraLine}><Text style={styles.groupTitle}>最热管理</Text></View>
+          {this.getItem(MENU.Custom_Key, MENU.Custom_Key.icon, MENU.Custom_Key.name)}
+          {this.getItem(MENU.Sort_Key, MENU.Sort_Key.icon, MENU.Sort_Key.name)}
+          {this.getItem(MENU.Remove_Key, MENU.Remove_Key.icon, MENU.Remove_Key.name)}
+          {/* 趋势管理 */}
+          <View style={styles.extraLine}><Text style={styles.groupTitle}>趋势管理</Text></View>
+          {this.getItem(MENU.Custom_Language, MENU.Custom_Language.icon, MENU.Custom_Language.name)}
+          {this.getItem(MENU.Sort_Language, MENU.Sort_Language.icon, MENU.Sort_Language.name)}
+          {/* 设置 */}
+          <View style={styles.extraLine}><Text style={styles.groupTitle}>设置</Text></View>
+          {this.getItem(MENU.Custom_Theme, MENU.Custom_Theme.icon, MENU.Custom_Theme.name)}
+          {this.getItem(MENU.About_Author, MENU.About_Author.icon, MENU.About_Author.name)}
+        </ScrollView>
       </View>
     )
   }
