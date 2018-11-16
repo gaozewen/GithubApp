@@ -83,7 +83,7 @@ export default class ViewUtils {
                 />
               )
             }
-            <Text>{text}</Text>
+            <Text style={{ color: '#757575' }}>{text}</Text>
           </View>
           <Image
             source={expandableIco || IMG_TIAOZHUAN}
