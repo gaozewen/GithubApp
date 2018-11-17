@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {
-  View,
+  View, Linking,
   // StyleSheet, Text, Image, Dimensions,
 } from 'react-native'
 // utils
@@ -19,6 +19,13 @@ export default class AboutPage extends Component {
   constructor(props) {
     super(props)
     this.aboutCommon = new AboutCommon(props, state => this.updateState(state), ABOUT_IN.ABOUT_APP)
+    this.state = {
+      repoCellArray: [],
+    }
+  }
+
+  componentDidMount = () => {
+    this.aboutCommon.componentDidMount()
   }
 
   updateState = (state) => {
@@ -27,14 +34,27 @@ export default class AboutPage extends Component {
 
   onClick = (navigateTo) => {
     const { navigation } = this.props
+    const url = 'mailto://1440651163@qq.com'
     let routeName
     let params
     switch (navigateTo) {
       case MENU.Website:
+        routeName = 'WebViewPage'
+        params = {
+          title: 'GitHub Popular',
+          url: 'https://blog.csdn.net/github_38313789',
+        }
         break
       case MENU.About_Author:
         break
       case MENU.Feedback:
+        Linking.canOpenURL(url).then((supported) => {
+          if (!supported) {
+            console.log(`Can't handle url:${url}`)
+          } else {
+            Linking.openURL(url)
+          }
+        })
         break
       default:
         break
@@ -53,9 +73,10 @@ export default class AboutPage extends Component {
     }
     const content = (
       <View>
-        {ViewUtils.getSettingItem(() => this.onClick(), MENU.Website.icon, MENU.Website.name, { tintColor: '#2196F3' })}
-        {ViewUtils.getSettingItem(() => this.onClick(), MENU.About_Author.icon, MENU.About_Author.name, { tintColor: '#2196F3' })}
-        {ViewUtils.getSettingItem(() => this.onClick(), MENU.Feedback.icon, MENU.Feedback.name, { tintColor: '#2196F3' })}
+        {this.aboutCommon.renderRepoCells(this.state.repoCellArray)}
+        {ViewUtils.getSettingItem(() => this.onClick(MENU.Website), MENU.Website.icon, MENU.Website.name, { tintColor: '#2196F3' })}
+        {ViewUtils.getSettingItem(() => this.onClick(MENU.About_Author), MENU.About_Author.icon, MENU.About_Author.name, { tintColor: '#2196F3' })}
+        {ViewUtils.getSettingItem(() => this.onClick(MENU.Feedback), MENU.Feedback.icon, MENU.Feedback.name, { tintColor: '#2196F3' })}
       </View>
     )
     return this.aboutCommon.render(params, content)

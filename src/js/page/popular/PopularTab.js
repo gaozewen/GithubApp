@@ -103,13 +103,16 @@ export default class PopularTab extends Component {
 
     let reqUrl = URL + tabLabel + QUERY_STR + currentPage * 20
     if (dataType === DATA_TYPE.INIT) { // 初始化
-      this.items = await fetchRepository(reqUrl).catch(err => console.log(err))
+      const result = await fetchRepository(reqUrl).catch(err => console.log(err))
+      this.items = result.items || result // result 是 网络直接获取的 不是 本地数据
     } else if (dataType === DATA_TYPE.REFRESHING) { // 刷新数据
       this.setState({ currentPage: 1 })
       reqUrl = URL + tabLabel + QUERY_STR + 20
-      this.items = await fetchNetRepository(reqUrl).catch(err => console.log(err))
+      const result = await fetchNetRepository(reqUrl).catch(err => console.log(err))
+      this.items = result.items || result
     } else if (dataType === DATA_TYPE.MORE) { // 加载更多
-      this.items = await fetchNetRepository(reqUrl).catch(err => console.log(err))
+      const result = await fetchNetRepository(reqUrl).catch(err => console.log(err))
+      this.items = result.items || result
     }
 
     await this.syncingData() // 比对 keys 同步 收藏状态

@@ -17,6 +17,10 @@ utils           工具
 - react-native run-android --variant=release
 - adb shell input keyevent 82
 
+# 打包 ios
+
+- react-native bundle --entry-file index.js --platform ios --dev false --bundle-output release/main.jsbundle --assets-dest release/
+
 
 
 

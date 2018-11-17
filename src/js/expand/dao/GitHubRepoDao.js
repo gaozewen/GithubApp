@@ -6,6 +6,7 @@ import GitHubTrending from 'GitHubTrending'
 export const USE_IN = {
   POPULAR: 'use_in_popular_page',
   TRENDING: 'use_in_tending_page',
+  MY_GITHUB_PROJECT: 'use_in_my_github_project',
 }
 export default class GitHubRepoDao {
   constructor(whichPageUse) {
@@ -16,14 +17,14 @@ export default class GitHubRepoDao {
   /**
    * 获取 github 仓库数据
    *
-   * @param {} url
+   * @param {*} url
    * @memberof GitHubRepoDao
    */
   fetchRepository = async (url) => {
-    const local = await this.fetchLocalRepository(url)
-    if (local && local !== null) return local
-    const net = await this.fetchNetRepository(url)
-    return net
+    const localWrapData = await this.fetchLocalRepository(url)
+    if (localWrapData && localWrapData !== null) return localWrapData
+    const netOriginData = await this.fetchNetRepository(url)
+    return netOriginData
   }
 
   /**
@@ -57,27 +58,30 @@ export default class GitHubRepoDao {
    */
   fetchNetRepository = (url) => {
     return new Promise((resolve, reject) => {
-      if (this.use_in === USE_IN.POPULAR) {
+      if (this.use_in !== USE_IN.TRENDING) { // popular 页面 或 我的开源项目 页面
         fetch(url)
           .then(resp => resp.json())
           .then((result) => {
-            if (!result) {
+            if (this.use_in === USE_IN.MY_GITHUB_PROJECT && result) { // my
+              this.saveRespositoryToLocal(url, result)
+              resolve(result)
+            } else if (result && result.items) { // popular
+              this.saveRespositoryToLocal(url, result.items)
+              resolve(result.items)
+            } else {
               reject(new Error('responseData is null'))
-              return
             }
-            resolve(result.items)
-            this.saveRespositoryToLocal(url, result.items)
           })
           .catch(err => reject(err))
       } else {
         this.trending.fetchTrending(url)
           .then((result) => {
-            if (!result) {
+            if (result) {
+              this.saveRespositoryToLocal(url, result)
+              resolve(result)
+            } else {
               reject(new Error('responseData is null'))
-              return
             }
-            resolve(result)
-            this.saveRespositoryToLocal(url, result)
           })
       }
     })
@@ -92,7 +96,13 @@ export default class GitHubRepoDao {
    * @memberof GitHubRepoDao
    */
   saveRespositoryToLocal = (url, items, callback) => {
-    if (!url || !items || !url.includes('per_page=20')) return // 不是第一页就 返回
-    AsyncStorage.setItem(url, JSON.stringify(items), callback) // 只保存第一页的数据
+    if (!url || !items || (!url.includes('per_page=20') && !url.includes('crazycodeboy'))) return // 不是第一页就 返回
+    let wrapData
+    if (this.use_in === USE_IN.MY_GITHUB_PROJECT) {
+      wrapData = { item: items, update_date: new Date().getTime() }
+    } else {
+      wrapData = { items, update_date: new Date().getTime() }
+    }
+    AsyncStorage.setItem(url, JSON.stringify(wrapData), callback) // 只保存第一页的数据
   }
 }

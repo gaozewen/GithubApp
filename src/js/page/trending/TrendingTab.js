@@ -107,9 +107,11 @@ export default class TrendingTab extends Component {
     if (!isSyncing) { // 同步 状态不需要重新获取
       const reqUrl = this.getFetchUrl(timespan, tabLabel)
       if (dataType === DATA_TYPE.INIT) { // 初始化
-        this.items = await fetchRepository(reqUrl).catch(err => console.log(err))
+        const result = await fetchRepository(reqUrl).catch(err => console.log(err))
+        this.items = result.items || result
       } else { // 刷新数据
-        this.items = await fetchNetRepository(reqUrl).catch(err => console.log(err))
+        const result = await fetchNetRepository(reqUrl).catch(err => console.log(err))
+        this.items = result.items || result
       }
     }
     await this.syncingData() // 比对 key 同步数据

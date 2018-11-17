@@ -6,9 +6,18 @@ import {
 import ParallaxScrollView from 'react-native-parallax-scroll-view'
 // utils
 import ViewUtils from '../../utils/ViewUtils'
+import CheckUtils from '../../utils/CheckUtils'
+// dao
+import CollectionDao, { USE_IN } from '../../expand/dao/CollectionDao'
+import RepoUtils from '../../expand/dao/RepoUtils'
+// models
+import RepoCell from '../../expand/model/RepoCell'
+// components
+import PopularRepoCell from '../popular/PopularRepoCell'
+// config
+import CONFIG from '../../../assets/ini/config.json'
 
 const window = Dimensions.get('window')
-
 // const AVATAR_SIZE = 120
 const AVATAR_SIZE = 90
 const ROW_HEIGHT = 60
@@ -94,6 +103,76 @@ class AboutCommon {
     this.props = props
     this.updateState = updateState
     this.aboutIn = aboutIn
+    this.collectionDao = new CollectionDao(USE_IN.POPULAR)
+    this.repos = []
+    this.collectionKeys = null // 为什么设置为 null 因为判断会方便一些
+    this.repoUtils = new RepoUtils(this)
+  }
+
+  componentDidMount = () => {
+    if (this.aboutIn === ABOUT_IN.ABOUT_APP) { // 关于页面只需要加载这一个开源项目
+      this.repoUtils.fetchRepo(CONFIG.info.currentRepoUrl)
+    } else if (this.aboutIn === ABOUT_IN.ABOUT_AUTHOR) {
+      const urls = []
+      CONFIG.items.forEach((item) => { urls.push(CONFIG.info.url + item) })
+      this.repoUtils.fetchRepoList(urls)
+    }
+  }
+
+
+  /**
+   * 通知数据发生改变
+   * @param {*} items 仓库 对象 数组
+   */
+  onNotifyDataChanged(items) {
+    this.updateFavorite(items)
+  }
+
+  /**
+   * 更新 作者 开源项目的 用户收藏状态
+   * @param {*} repos
+   */
+  updateFavorite = async (repos) => {
+    if (!repos) return // 数据为null 直接返回
+    if (repos) this.repos = repos
+    if (!this.collectionKeys) { // 为空 去数据库中查询数据加载
+      this.collectionKeys = await this.collectionDao.getCollectionKeys()
+    }
+    const repoCellArray = [] // 将数据转化为 model
+    this.repos.forEach(item => repoCellArray.push(
+      new RepoCell(item, CheckUtils.checkIsCollected(item, this.collectionKeys)),
+    ))
+    this.updateState({ repoCellArray }) // AboutPage 这类 主页面传过来的方法
+  }
+
+  onSelect = (item, isCollected, syncCellStarState) => {
+    const { navigation } = this.props
+    navigation.navigate('RepositoryDetail', { item, isCollected, syncCellStarState })
+  }
+
+  renderRepoCells(repoCellArray) { // 渲染 当前app 这个项目，或 作者的所有开源项目
+    if (!repoCellArray || repoCellArray.length === 0) return null // 不渲染任何东西
+    const cells = repoCellArray.map((repoCell) => {
+      return (
+        <PopularRepoCell
+          key={repoCell.item.id}
+          repoCell={repoCell}
+          onSelect={(item, isCollected, syncCellStarState) => {
+            this.onSelect(item, isCollected, syncCellStarState)
+          }}
+          onCollect={(item, isCollected) => { this.onCollect(item, isCollected) }}
+        />
+      )
+    })
+    return cells
+  }
+
+  onCollect = (item, isCollected) => { // 点击小星星 callback
+    if (isCollected) { // 收藏，保存到数据库
+      this.collectionDao.collect(item.id.toString(), JSON.stringify(item))
+    } else { // 取消收藏，删除数据库中数据
+      this.collectionDao.unCollect(item.id.toString())
+    }
   }
 
   getParallaxConfig(params) {
