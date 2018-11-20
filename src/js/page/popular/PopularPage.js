@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-// import PropTypes from 'prop-types'
+import PropTypes from 'prop-types'
 import {
-  StyleSheet, View,
+  StyleSheet, View, TouchableOpacity, Image,
 } from 'react-native'
 // libs
 import ScrollableTabView, { ScrollableTabBar } from 'react-native-scrollable-tab-view'
@@ -11,6 +11,8 @@ import HeaderBar from '../../common/HeaderBar'
 import PopularTab from './PopularTab'
 // dao
 import LanguageDao, { USE_IN } from '../../expand/dao/LanguageDao'
+// imgs
+import IMG_SEARCH from '../../../assets/images/ic_search_white_48pt.png'
 
 const styles = StyleSheet.create({
   root: {
@@ -20,7 +22,7 @@ const styles = StyleSheet.create({
 
 export default class PopularPage extends Component {
   static propTypes = {
-
+    navigation: PropTypes.object,
   }
 
   constructor(props) {
@@ -46,7 +48,15 @@ export default class PopularPage extends Component {
   }
 
   render() {
+    const { navigation } = this.props
     const { languages } = this.state
+    const rightButton = (
+      <TouchableOpacity onPress={() => navigation.navigate('SearchPage')}>
+        <View style={{ padding: 5, marginRight: 8 }}>
+          <Image style={{ width: 24, height: 24 }} source={IMG_SEARCH} />
+        </View>
+      </TouchableOpacity>
+    )
     const content = languages.length > 0 // 防止 ScrollableTabView 因无法计算 PopularTab 的个数 而导致页面无限渲染
       ? (
         <ScrollableTabView
@@ -75,6 +85,7 @@ export default class PopularPage extends Component {
         <HeaderBar
           title="最热"
           sytle={{ backgroundColor: '#6495ED' }}
+          rightButton={rightButton}
         />
         {content}
       </View>

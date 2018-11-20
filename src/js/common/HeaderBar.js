@@ -88,11 +88,11 @@ export default class HeaderBar extends PureComponent {
     )
     const content = (
       <View style={styles.navBar}>
-        {leftButton}
+        <View>{leftButton}</View>
         <View style={styles.middleContainer}>
           {middle}
         </View>
-        {rightButton}
+        <View>{rightButton}</View>
       </View>
     )
     return (

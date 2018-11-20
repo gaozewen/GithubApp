@@ -16,6 +16,7 @@ import RepositoryDetail from '../page/RepositoryDetail'
 import AboutPage from '../page/about/AboutPage'
 import WebViewPage from '../page/WebViewPage'
 import AboutMePage from '../page/about/AboutMePage'
+import SearchPage from '../page/search/SearchPage'
 
 const AppNavigator = StackNavigator(
   {
@@ -28,6 +29,7 @@ const AppNavigator = StackNavigator(
     AboutPage: { screen: AboutPage },
     WebViewPage: { screen: WebViewPage },
     AboutMePage: { screen: AboutMePage },
+    SearchPage: { screen: SearchPage },
   },
   {
     navigationOptions: {
