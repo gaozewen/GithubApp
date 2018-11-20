@@ -21,6 +21,7 @@ export default class RepoUtils {
     this.map.forEach((value) => { // (value, key, map)
       items.push(value.item ? value.item : value)
     })
+    console.log(items)
     this.aboutCommon.onNotifyDataChanged(items)
   }
 
@@ -32,8 +33,8 @@ export default class RepoUtils {
     let result = await this.gitHubRepoDao.fetchRepository(url)
     if (result) { // 本地数据 或 网络数据
       this.updateData(url, result)
-      // 网络数据 没有 被 wrap 所以没有 update_date 所以默认为 true
-      if (CheckUtils.checkIsExpired(result.update_data)) {
+      // 本地有缓存的情况下 且 缓存数据已过期
+      if (result.update_data && CheckUtils.checkIsExpired(result.update_data)) {
         result = await this.gitHubRepoDao.fetchNetRepository(url)
         if (result) {
           this.updateData(url, result)

@@ -155,7 +155,7 @@ class AboutCommon {
     const cells = repoCellArray.map((repoCell) => {
       return (
         <PopularRepoCell
-          key={repoCell.item.id}
+          key={repoCell.item}
           repoCell={repoCell}
           onSelect={(item, isCollected, syncCellStarState) => {
             this.onSelect(item, isCollected, syncCellStarState)

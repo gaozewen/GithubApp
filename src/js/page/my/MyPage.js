@@ -84,6 +84,7 @@ export default class MyPage extends Component {
       case MENU.Custom_Theme:
         break
       case MENU.About_Author:
+        routeName = 'AboutMePage'
         break
       default:
         break

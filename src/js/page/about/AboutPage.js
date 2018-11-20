@@ -10,6 +10,8 @@ import ViewUtils from '../../utils/ViewUtils'
 import { MENU } from '../../constants/Menu'
 // commons
 import AboutCommon, { ABOUT_IN } from './AboutCommon'
+// config
+import CONFIG from '../../../assets/ini/config.json'
 
 export default class AboutPage extends Component {
   static propTypes = {
@@ -34,7 +36,7 @@ export default class AboutPage extends Component {
 
   onClick = (navigateTo) => {
     const { navigation } = this.props
-    const url = 'mailto://1440651163@qq.com'
+    const url = 'mailto://crazycodeboy@gmail.com'
     let routeName
     let params
     switch (navigateTo) {
@@ -42,10 +44,11 @@ export default class AboutPage extends Component {
         routeName = 'WebViewPage'
         params = {
           title: 'GitHub Popular',
-          url: 'https://blog.csdn.net/github_38313789',
+          url: 'http://www.devio.org/io/GitHubPopular/',
         }
         break
       case MENU.About_Author:
+        routeName = 'AboutMePage'
         break
       case MENU.Feedback:
         Linking.canOpenURL(url).then((supported) => {
@@ -68,8 +71,8 @@ export default class AboutPage extends Component {
     const params = {
       name: 'GitHub Popular',
       description: '这是一个用来查看GitHub最受欢迎与最热项目的App,它基于React Native支持Android和iOS双平台。',
-      avatar: 'https://avatars0.githubusercontent.com/u/26213278?s=400&u=89f3a6d81cf0dcc083340f0759769c3617f0d6f1&v=4',
-      backgroundImg: 'http://www.devio.org/io/GitHubPopular/img/for_githubpopular_about_me.jpg',
+      avatar: CONFIG.author.avatar1,
+      backgroundImg: CONFIG.author.backgroundImg1,
     }
     const content = (
       <View>

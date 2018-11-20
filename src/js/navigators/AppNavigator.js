@@ -15,6 +15,7 @@ import SortKeyPage from '../page/my/SortKeyPage'
 import RepositoryDetail from '../page/RepositoryDetail'
 import AboutPage from '../page/about/AboutPage'
 import WebViewPage from '../page/WebViewPage'
+import AboutMePage from '../page/about/AboutMePage'
 
 const AppNavigator = StackNavigator(
   {
@@ -26,6 +27,7 @@ const AppNavigator = StackNavigator(
     RepositoryDetail: { screen: RepositoryDetail },
     AboutPage: { screen: AboutPage },
     WebViewPage: { screen: WebViewPage },
+    AboutMePage: { screen: AboutMePage },
   },
   {
     navigationOptions: {
