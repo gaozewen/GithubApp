@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {
   StyleSheet, View, Text, TextInput, TouchableOpacity,
-  Dimensions, ListView, RefreshControl,
+  Dimensions, ListView, RefreshControl, DeviceEventEmitter,
 } from 'react-native'
 // commons
 import HeaderBar from '../../common/HeaderBar'
@@ -12,20 +12,47 @@ import ToastUtils from '../../utils/ToastUtils'
 import CheckUtils from '../../utils/CheckUtils'
 // dao
 import CollectionDao, { USE_IN } from '../../expand/dao/CollectionDao'
+import LanguageDao from '../../expand/dao/LanguageDao'
 // model
 import RepoCell from '../../expand/model/RepoCell'
 // components
 import PopularRepoCell from '../popular/PopularRepoCell'
+// actions
+import EmitActions from '../../constants/EmitActions'
 
 const styles = StyleSheet.create({
   root: {
     flex: 1,
+  },
+  input: {
+    width: (Dimensions.get('window').width - 100),
+    height: 30,
+    alignSelf: 'center',
+    paddingTop: 2,
+    paddingRight: 20,
+    paddingBottom: 2,
+    paddingLeft: 20,
+    borderRadius: 50,
+    fontSize: 16,
+    backgroundColor: '#fff',
+  },
+  bottomButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    opacity: 0.9,
+    height: 40,
+    position: 'absolute',
+    bottom: 8,
+    left: 10,
+    right: 10,
+    borderRadius: 3,
   },
 })
 
 const API_URL = 'https://api.github.com/search/repositories?q='
 const QUERY_STR = '&sort=stars&page=1&per_page='
 const collectionDao = new CollectionDao(USE_IN.POPULAR)
+const languageDao = new LanguageDao(USE_IN.POPULAR)
 export default class SearchPage extends Component {
   static propTypes = {
     navigation: PropTypes.object,
@@ -37,21 +64,47 @@ export default class SearchPage extends Component {
       rightButtonText: '搜索',
       isLoading: false,
       dataSource: new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 }),
+      isShowBottomButton: false,
+      currentKey: null,
     }
+
+    this.keys = [] // 本地数据库中已存在的 所有自定义标签
     this.currentPage = 1 // 当前页
     this.collectionKeys = [] // 所有用户收藏项目的 keys
     this.items = []
-    this.isNeedSync = false // 是否需要同步数据
+    this.isKeysChanged = false // 是否添加了标签
   }
 
   componentDidMount = () => {
+  }
 
+  componentWillUnmount = () => {
+    if (this.isKeysChanged) {
+      DeviceEventEmitter.emit(
+        EmitActions.SYNC_HOME_PAGE.EVENT,
+        EmitActions.SYNC_HOME_PAGE.FROM_SEARCH_PAGE,
+      )
+    }
+  }
+
+  getAllKeys = async () => { // 获取所有标签
+    this.keys = await languageDao.fetch()
+  }
+
+  checkKeyIsExist = (keys, key) => { // 检查 key 是否存在于 本地数据库中
+    const k = key.toLowerCase()
+    for (let i = 0; i < keys.length; i++) {
+      if (keys[i].name.toLowerCase() === k) {
+        return true
+      }
+    }
+    return false
   }
 
   loadData = async (isRefresh) => {
     if (this.state.isLoading) return
     try {
-      this.setState({ isLoading: true })
+      this.setState({ isLoading: true, rightButtonText: '取消' })
       if (isRefresh) { // 刷新数据
         this.currentPage = 1
       }
@@ -66,15 +119,23 @@ export default class SearchPage extends Component {
       // !this 页面已销毁
       if (!this || !result || !result.items || result.items.length === 0) {
         ToastUtils.showShort('主人，什么都没有找到哟，请换一种姿势呢')
-        this.setState({ isLoading: false, rightButtonText: '搜索' })
+        this.setState({ isLoading: false, rightButtonText: '搜索', isShowBottomButton: false })
         return
       }
       this.items = result.items
       await this.syncingData() // 比对 keys 同步 收藏状态
       this.currentPage += 1 // 加载更多 时使用
+
+      // 判断是否显示 底部 添加标签按钮
+      await this.getAllKeys()
+      if (!this.checkKeyIsExist(this.keys, this.text)) { // 不存在
+        this.setState({ currentKey: this.text, isShowBottomButton: true })
+      } else { // 存在
+        this.setState({ isShowBottomButton: false })
+      }
       this.setState({ isLoading: false, rightButtonText: '搜索' })
     } catch (error) {
-      this.setState({ isLoading: false, rightButtonText: '搜索' })
+      this.setState({ isLoading: false, rightButtonText: '搜索', isShowBottomButton: false })
     }
   }
 
@@ -107,22 +168,17 @@ export default class SearchPage extends Component {
     })
   }
 
+  // HeaderBar Start
+  onBackPress = () => {
+    this.input.blur() // 隐藏键盘
+    const { navigation } = this.props
+    navigation.pop()
+  }
 
   getTitleView = () => {
     return (
       <TextInput
-        style={{
-          width: (Dimensions.get('window').width - 100),
-          height: 30,
-          alignSelf: 'center',
-          paddingTop: 2,
-          paddingRight: 20,
-          paddingBottom: 2,
-          paddingLeft: 20,
-          borderRadius: 50,
-          fontSize: 16,
-          backgroundColor: '#fff',
-        }}
+        style={styles.input}
         ref={(input) => { this.input = input }}
         placeholder="请输入标签"
         placeholderTextColor="#9E9E9E"
@@ -134,12 +190,6 @@ export default class SearchPage extends Component {
         onSubmitEditing={() => { this.loadData(true) }}
       />
     )
-  }
-
-  onBackPress = () => {
-    this.input.blur() // 隐藏键盘
-    const { navigation } = this.props
-    navigation.pop()
   }
 
   onRightButtonClick = () => {
@@ -164,6 +214,17 @@ export default class SearchPage extends Component {
     )
   }
 
+  renderHeaderBar = () => {
+    return (
+      <HeaderBar
+        titleView={this.getTitleView()}
+        leftButton={ViewUtils.getBackButton(() => { this.onBackPress() })}
+        rightButton={this.getRightButton()}
+      />
+    )
+  }
+
+  // list start
   onSelect = (item, isCollected, syncCellStarState) => {
     const { navigation } = this.props
     navigation.navigate('RepositoryDetail', { item, isCollected, syncCellStarState })
@@ -189,36 +250,67 @@ export default class SearchPage extends Component {
     }
   }
 
-  render() {
+  renderList = () => {
     const { dataSource, isLoading } = this.state
     return (
-      <View style={styles.root}>
-        <HeaderBar
-          titleView={this.getTitleView()}
-          leftButton={ViewUtils.getBackButton(() => { this.onBackPress() })}
-          rightButton={this.getRightButton()}
-        />
-        {
-          this.text ? (
-            <ListView
-              dataSource={dataSource}
-              renderRow={repoCell => this.renderRow(repoCell)}
-              onEndReached={() => this.loadData()}
-              onEndReachedThreshold={20}
-              refreshControl={(
-                <RefreshControl
-                  refreshing={isLoading}
-                  onRefresh={() => this.loadData(true)}
-                  colors={['#2196F3']}
-                  title="Loading..."
-                  titleColor="#2196F3"
-                  tintColor="#2196F3"
-                />
-              )}
-            />
-          ) : null
-        }
+      <ListView
+        dataSource={dataSource}
+        renderRow={repoCell => this.renderRow(repoCell)}
+        onEndReached={() => this.loadData()}
+        onEndReachedThreshold={20}
+        refreshControl={(
+          <RefreshControl
+            refreshing={isLoading}
+            onRefresh={() => this.loadData(true)}
+            colors={['#2196F3']}
+            title="Loading..."
+            titleColor="#2196F3"
+            tintColor="#2196F3"
+          />
+        )}
+      />
+    )
+  }
 
+  // 底部 button start
+
+  saveKey = async () => {
+    const { currentKey } = this.state
+    await this.getAllKeys()
+    if (this.checkKeyIsExist(this.keys, currentKey)) {
+      this.isKeysChanged = true
+      this.setState({ isShowBottomButton: false })
+      ToastUtils.showShort('添加成功')
+    } else {
+      const key = { path: currentKey, name: currentKey, checked: true }
+      this.keys.unshift(key)
+      languageDao.save(this.keys, () => {
+        this.isKeysChanged = true
+        this.setState({ isShowBottomButton: false })
+        ToastUtils.showShort('添加成功')
+      }, () => { ToastUtils.showShort('添加失败') })
+    }
+  }
+
+  renderBottomButton = () => {
+    return (
+      <TouchableOpacity
+        style={[styles.bottomButton, { backgroundColor: '#2196F3' }]}
+        onPress={() => this.saveKey()}
+      >
+        <View>
+          <Text style={{ fontSize: 18, color: '#fff', fontWeight: '500' }}>添加标签</Text>
+        </View>
+      </TouchableOpacity>
+    )
+  }
+
+  render() {
+    return (
+      <View style={styles.root}>
+        {this.renderHeaderBar()}
+        {this.text ? this.renderList() : null}
+        {this.state.isShowBottomButton ? this.renderBottomButton() : null}
       </View>
     )
   }

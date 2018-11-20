@@ -14,6 +14,8 @@ import SortCell from './SortCell'
 // utils
 import ArrayUtils from '../../utils/ArrayUtils'
 import ViewUtils from '../../utils/ViewUtils'
+// eimit
+import EmitActions from '../../constants/EmitActions'
 
 const styles = StyleSheet.create({
   root: {
@@ -85,7 +87,10 @@ export default class SortKeyPage extends Component {
     if (isSorted || !ArrayUtils.isEqual(this.originalCheckedArray, sortingArray)) { // 排序了
       this.getSortedWholeArray(sortingArray) // 设置 排序后的 完整数组 序列
       this.languageDao.save(this.sortedWholeArray) // 保存最终排序到数据库
-      DeviceEventEmitter.emit('update_home')
+      DeviceEventEmitter.emit(
+        EmitActions.SYNC_HOME_PAGE.EVENT,
+        EmitActions.SYNC_HOME_PAGE.FROM_CUSTOM_PAGE,
+      )
       return
     }
     navigation.pop()

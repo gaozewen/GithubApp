@@ -18,6 +18,8 @@ import LanguageDao, { USE_IN } from '../../expand/dao/LanguageDao'
 // imgs
 import IMG_CHECKED from '../../../assets/images/my/ic_check_box.png'
 import IMG_UNCHECKED from '../../../assets/images/my/ic_check_box_outline_blank.png'
+// emit
+import EmitActions from '../../constants/EmitActions'
 
 const styles = StyleSheet.create({
   root: {
@@ -113,7 +115,10 @@ export default class CustomKeyPage extends Component {
       } else {
         this.languageDao.save(this.state.dataArray)
       }
-      DeviceEventEmitter.emit('update_home')
+      DeviceEventEmitter.emit(
+        EmitActions.SYNC_HOME_PAGE.EVENT,
+        EmitActions.SYNC_HOME_PAGE.FROM_CUSTOM_PAGE,
+      )
       return
     }
     navigation.pop()

@@ -5,8 +5,8 @@ import keysData from '../../../assets/ini/keys.json'
 import langsData from '../../../assets/ini/langs.json'
 
 export const USE_IN = {
-  POPULAR: 'USE_IN_POPULAR_PAGE',
-  TRENDING: 'USE_IN_TRENDING_PAGE',
+  POPULAR: 'use_in_popular_page',
+  TRENDING: 'use_in_tending_page',
 }
 
 export default class LanguageDao {
@@ -14,12 +14,18 @@ export default class LanguageDao {
     this.itemKey = whichPageUse
   }
 
-  save = (data) => {
-    AsyncStorage.setItem(this.itemKey, JSON.stringify(data), () => {
-      // console.log(error)
+  save = (data, success, fail) => {
+    AsyncStorage.setItem(this.itemKey, JSON.stringify(data), (error) => {
+      if (!error) success && success() // eslint-disable-line
+      else fail && fail() // eslint-disable-line
     })
   }
 
+  /**
+   * 获取所有的 自定义标签 key
+   *
+   * @memberof LanguageDao
+   */
   fetch = () => {
     return new Promise((resolve, reject) => {
       AsyncStorage.getItem(this.itemKey, (error, result) => {

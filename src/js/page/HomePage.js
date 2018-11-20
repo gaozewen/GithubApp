@@ -17,6 +17,8 @@ import PopularPage from './popular/PopularPage'
 import TrendingPage from './trending/TrendingPage'
 import FavoritePage from './favorite/FavoritePage'
 import MyPage from './my/MyPage'
+// eimit
+import EmitActions from '../constants/EmitActions'
 
 const styles = StyleSheet.create({
   container: {
@@ -52,19 +54,28 @@ export default class HomePage extends Component {
   }
 
   componentDidMount = () => {
-    // this.listener = DeviceEventEmitter.addListener('showToast', (text) => {
-    //   console.log(text)
-    // })
-    const { navigation } = this.props
-    const { selectedTab } = this.state
-    this.listener = DeviceEventEmitter.addListener('update_home', () => {
-      NavigatorUtils.resetToHomePage({ navigation, selectedTab })
-    })
+    this.listener = DeviceEventEmitter.addListener(
+      EmitActions.SYNC_HOME_PAGE.EVENT,
+      action => this.onAction(action),
+    )
   }
 
   componentWillUnmount = () => {
     if (this.listener) {
       this.listener.remove()
+    }
+  }
+
+  onAction = (action) => {
+    const { navigation } = this.props
+    const { selectedTab } = this.state
+    switch (action) {
+      case EmitActions.SYNC_HOME_PAGE.FROM_CUSTOM_PAGE:
+      case EmitActions.SYNC_HOME_PAGE.FROM_SEARCH_PAGE:
+        NavigatorUtils.resetToHomePage({ navigation, selectedTab })
+        break
+      default:
+        break
     }
   }
 
