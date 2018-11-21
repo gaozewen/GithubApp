@@ -2,10 +2,10 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {
   StyleSheet, Modal, View, Text, Image,
-  TouchableOpacity,
+  TouchableOpacity, StatusBar,
 } from 'react-native'
 // imgs
-import IMG_ARROW_TOP from '../../assets/images/arrow_top@3x.png'
+import IMG_ARROW_TOP from '../../assets/images/arrow_top.png' // eslint-disable-line
 // utils
 import DeviceUtils from '../utils/DeviceUtils'
 
@@ -14,23 +14,40 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'flex-end',
     backgroundColor: 'rgba(0,0,0,0.6)',
+    paddingTop: 44 + (DeviceUtils.isIphoneX() ? 24 : 0),
   },
   arrow: {
-    marginTop: 56 + (DeviceUtils.isIphoneX() ? 24 : 0),
     width: 16,
     height: 6,
     marginRight: 18,
     resizeMode: 'contain', // 显示整张图片，图片等比例缩放
+  },
+  content: {
+    // width: 100,
+    backgroundColor: '#fff',
+    borderRadius: 3,
+    paddingTop: 3,
+    paddingBottom: 3,
+    marginRight: 3,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderBottomWidth: 0.3,
+    borderBottomColor: 'darkgray',
+  },
+  icon: {
+    width: 16,
+    height: 16,
+    margin: 10,
+    marginLeft: 15,
   },
   text: { // item 的文字
     fontSize: 16,
     color: '#000',
     fontWeight: '400',
     paddingRight: 15,
-  },
-  line: { // 分割线
-    height: 0.3,
-    backgroundColor: 'darkgray',
   },
 })
 
@@ -46,7 +63,7 @@ export default class MenuDialog extends Component {
     menus: PropTypes.array.isRequired,
     onSelect: PropTypes.func.isRequired,
     onClose: PropTypes.func,
-    theme: PropTypes.object,
+    // theme: PropTypes.object,
   }
 
   state = {
@@ -59,15 +76,18 @@ export default class MenuDialog extends Component {
 
   show() {
     this.setState({ visiable: true })
+    StatusBar.setBackgroundColor('rgba(0,0,0,0.6)')
   }
 
   dismiss() {
+    StatusBar.setBackgroundColor('transparent')
     this.setState({ visiable: false })
   }
 
   render() {
     const {
-      menus, onSelect, onClose, theme,
+      menus, onSelect, onClose,
+      // theme,
     } = this.props
     const { visiable } = this.state
     return (
@@ -80,7 +100,7 @@ export default class MenuDialog extends Component {
           style={styles.root}
           onPress={() => { this.dismiss() }}
         >
-          <Image source={IMG_ARROW_TOP} />
+          <Image style={styles.arrow} source={IMG_ARROW_TOP} />
           <View
             style={styles.content}
           >
@@ -90,10 +110,21 @@ export default class MenuDialog extends Component {
                 onPress={() => onSelect(item)}
                 underlayColor="transparent"
               >
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Image source={item.icon} resizeMode="stretch" style={[styles.icon, theme.styles.tabBarSelectedIcon]} />
+                <View style={i !== menus.length - 1 ? styles.row : {
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  backgroundColor: '#fff',
+                }}
+                >
+                  <Image
+                    source={item.icon}
+                    resizeMode="stretch"
+                    style={[
+                      styles.icon, { tintColor: '#2196F3' },
+                      // theme.styles.tabBarSelectedIcon,
+                    ]}
+                  />
                   <Text style={styles.text}>{item.name}</Text>
-                  {i !== menus.length - 1 ? <View style={styles.line} /> : null}
                 </View>
               </TouchableOpacity>
             ))}

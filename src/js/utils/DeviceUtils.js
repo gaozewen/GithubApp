@@ -1,7 +1,7 @@
 import { Dimensions, Platform } from 'react-native'
 
-const screenW = Dimensions.get('window').width;
-const screenH = Dimensions.get('window').height;
+const screenW = Dimensions.get('window').width
+const screenH = Dimensions.get('window').height
 // iPhoneX
 const X_WIDTH = 375
 const X_HEIGHT = 812

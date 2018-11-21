@@ -1,0 +1,98 @@
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import {
+  Linking, StatusBar,
+} from 'react-native'
+// commons
+import MenuDialog from '../common/MenuDialog'
+// constants
+import { MENU } from '../constants/Menu'
+// dao
+import { USE_IN } from '../expand/dao/LanguageDao'
+
+export default class MoreMenu extends Component {
+  static propTypes = {
+    menus: PropTypes.array.isRequired,
+    // theme: PropTypes.object,
+    navigation: PropTypes.object.isRequired,
+  }
+
+  showDialog = () => {
+    this.dialog.show()
+  }
+
+  closeDialog = () => {
+    this.dialog.dismiss()
+  }
+
+  onMoreMenuSelect = (tab) => {
+    this.closeDialog()
+
+    const { navigation } = this.props
+    let routeName
+    let params
+
+    const url = 'mailto://crazycodeboy@gmail.com'
+    switch (tab) {
+      case MENU.Custom_Key:
+        routeName = 'CustomKeyPage'
+        params = { useIn: USE_IN.POPULAR }
+        break
+      case MENU.Sort_Key:
+        routeName = 'SortKeyPage'
+        params = { useIn: USE_IN.POPULAR }
+        break
+      case MENU.Remove_Key:
+        routeName = 'CustomKeyPage'
+        params = { isRemoveKeyPage: true, useIn: USE_IN.POPULAR }
+        break
+      case MENU.Custom_Language:
+        routeName = 'CustomKeyPage'
+        params = { useIn: USE_IN.TRENDING }
+        break
+      case MENU.Sort_Language:
+        routeName = 'SortKeyPage'
+        params = { useIn: USE_IN.TRENDING }
+        break
+      case MENU.Custom_Theme:
+        break
+      case MENU.About_Author:
+        routeName = 'AboutMePage'
+        break
+      case MENU.About:
+        routeName = 'AboutPage'
+        break
+      case MENU.Feedback:
+        Linking.canOpenURL(url).then((supported) => {
+          if (!supported) {
+            console.log(`Can't handle url: ${url}`)
+          } else {
+            Linking.openURL(url)
+          }
+        }).catch(err => console.error('An error occurred', err))
+        break
+      case MENU.Share:
+        break
+      default:
+        break
+    }
+    if (routeName) {
+      navigation.navigate(routeName, params)
+    }
+  }
+
+  render() {
+    const {
+      // theme,
+      menus,
+    } = this.props
+    return (
+      <MenuDialog
+        ref={(dialog) => { this.dialog = dialog }}
+        menus={menus}
+        // theme={theme}
+        onSelect={tab => this.onMoreMenuSelect(tab)}
+      />
+    )
+  }
+}

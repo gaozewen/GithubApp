@@ -8,15 +8,18 @@ import {
 import ScrollableTabView, { ScrollableTabBar } from 'react-native-scrollable-tab-view'
 // common
 import HeaderBar from '../../common/HeaderBar'
-// components
-import TrendingTab from './TrendingTab'
 // dao
 import LanguageDao, { USE_IN } from '../../expand/dao/LanguageDao'
 // imgs
 import IMG_DROP_DOWN from '../../../assets/images/ic_spinner_triangle.png'
 // components
+import TrendingTab from './TrendingTab'
 import TrendingDialog, { TimespanArray } from './TrendingDialog'
-
+import MoreMenu from '../MoreMenu'
+// constants
+import { MENU } from '../../constants/Menu'
+// utils
+import ViewUtils from '../../utils/ViewUtils'
 
 const styles = StyleSheet.create({
   root: {
@@ -50,6 +53,28 @@ export default class TrendingPage extends Component {
 
   componentDidMount = () => {
     this.initData()
+  }
+
+  // 渲染更多菜单
+  renderMoreMenu = () => {
+    return (
+      <MoreMenu
+        {...this.props}
+        ref={(menu) => { this.menu = menu }}
+        menus={[
+          MENU.Custom_Language, MENU.Sort_Language,
+          MENU.Share, MENU.Custom_Theme,
+          MENU.About_Author, MENU.About,
+        ]}
+        onMoreMenuSelect={(e) => {
+          if (e === MENU.Custom_Theme) {
+            // this.setState({
+            //   customThemeViewVisible: true,
+            // })
+          }
+        }}
+      />
+    )
   }
 
   renderTitleView = () => {
@@ -120,10 +145,11 @@ export default class TrendingPage extends Component {
       <View style={styles.root}>
         <HeaderBar
           titleView={this.renderTitleView()}
-          sytle={{ backgroundColor: '#6495ED' }}
+          rightButton={ViewUtils.getMoreMenuButton(() => this.menu.showDialog())}
         />
         {this.renderContent()}
         {this.renderTrendingDialog()}
+        {this.renderMoreMenu()}
       </View>
     )
   }

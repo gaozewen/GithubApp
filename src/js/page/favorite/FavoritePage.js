@@ -9,7 +9,12 @@ import ScrollableTabView, { ScrollableTabBar } from 'react-native-scrollable-tab
 import HeaderBar from '../../common/HeaderBar'
 // components
 import FavoriteTab from './FavoriteTab'
-import { USE_IN } from '../../expand/dao/GitHubRepoDao';
+import { USE_IN } from '../../expand/dao/GitHubRepoDao'
+import MoreMenu from '../MoreMenu'
+// constants
+import { MENU } from '../../constants/Menu'
+// utils
+import ViewUtils from '../../utils/ViewUtils'
 
 const styles = StyleSheet.create({
   root: {
@@ -31,6 +36,26 @@ export default class FavoritePage extends Component {
   componentDidMount = () => {
   }
 
+  // 渲染更多菜单
+  renderMoreMenu = () => {
+    return (
+      <MoreMenu
+        {...this.props}
+        ref={(menu) => { this.menu = menu }}
+        menus={[
+          MENU.Share, MENU.Custom_Theme,
+          MENU.About_Author, MENU.About,
+        ]}
+        onMoreMenuSelect={(e) => {
+          if (e === MENU.Custom_Theme) {
+            // this.setState({
+            //   customThemeViewVisible: true,
+            // })
+          }
+        }}
+      />
+    )
+  }
 
   renderContent = () => {
     return (
@@ -52,9 +77,10 @@ export default class FavoritePage extends Component {
       <View style={styles.root}>
         <HeaderBar
           title="收藏"
-          sytle={{ backgroundColor: '#6495ED' }}
+          rightButton={ViewUtils.getMoreMenuButton(() => this.menu.showDialog())}
         />
         {this.renderContent()}
+        {this.renderMoreMenu()}
       </View>
     )
   }

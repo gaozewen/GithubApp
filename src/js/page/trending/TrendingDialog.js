@@ -22,6 +22,7 @@ const styles = StyleSheet.create({
     width: 16,
     height: 6,
     resizeMode: 'contain', // 显示整张图片，图片等比例缩放
+    tintColor: 'rgba(0,0,0,0.5)',
   },
   content: {
     width: 100,
@@ -92,7 +93,7 @@ export default class MenuDialog extends Component {
           style={styles.root}
           onPress={() => { this.dismiss() }}
         >
-          <Image style={{ tintColor: 'rgba(0,0,0,0.5)' }} source={IMG_ARROW_TOP} />
+          <Image style={styles.arrow} source={IMG_ARROW_TOP} />
           <View
             style={styles.content}
           >

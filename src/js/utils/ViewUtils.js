@@ -7,6 +7,7 @@ import {
 // imgs
 import IMG_BACK from '../../assets/images/ic_arrow_back_white_36pt.png'
 import IMG_TIAOZHUAN from '../../assets/images/ic_tiaozhuan.png'
+import IMG_MORE_MENU from '../../assets/images/ic_more_vert_white_48pt.png'
 
 const styles = StyleSheet.create({
   item: {
@@ -95,6 +96,28 @@ export default class ViewUtils {
               opacity: 1,
             }, tintStyle]}
           />
+        </View>
+      </TouchableHighlight>
+    )
+  }
+
+  /**
+   * 获取 更多菜单 按钮
+   *
+   * @static
+   * @param {*} callBack
+   * @returns
+   * @memberof ViewUtils
+   */
+  static getMoreMenuButton(callBack) {
+    return (
+      <TouchableHighlight
+        underlayColor="transparent"
+        style={{ padding: 5 }}
+        onPress={callBack}
+      >
+        <View style={{ paddingRight: 8 }}>
+          <Image style={{ width: 24, height: 24 }} source={IMG_MORE_MENU} />
         </View>
       </TouchableHighlight>
     )

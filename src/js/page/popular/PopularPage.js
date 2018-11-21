@@ -9,10 +9,15 @@ import ScrollableTabView, { ScrollableTabBar } from 'react-native-scrollable-tab
 import HeaderBar from '../../common/HeaderBar'
 // components
 import PopularTab from './PopularTab'
+import MoreMenu from '../MoreMenu'
 // dao
 import LanguageDao, { USE_IN } from '../../expand/dao/LanguageDao'
 // imgs
 import IMG_SEARCH from '../../../assets/images/ic_search_white_48pt.png'
+// constants
+import { MENU } from '../../constants/Menu'
+// utils
+import ViewUtils from '../../utils/ViewUtils'
 
 const styles = StyleSheet.create({
   root: {
@@ -47,15 +52,39 @@ export default class PopularPage extends Component {
     this.initData()
   }
 
+  // 渲染更多菜单
+  renderMoreMenu() {
+    return (
+      <MoreMenu
+        {...this.props}
+        ref={(menu) => { this.menu = menu }}
+        menus={[
+          MENU.Custom_Key, MENU.Sort_Key, MENU.Remove_Key,
+          MENU.Share, MENU.Custom_Theme, MENU.About_Author, MENU.About,
+        ]}
+        onMoreMenuSelect={(e) => {
+          if (e === MENU.Custom_Theme) {
+            // this.setState({
+            //   customThemeViewVisible: true,
+            // })
+          }
+        }}
+      />
+    )
+  }
+
   render() {
     const { navigation } = this.props
     const { languages } = this.state
     const rightButton = (
-      <TouchableOpacity onPress={() => navigation.navigate('SearchPage')}>
-        <View style={{ padding: 5, marginRight: 8 }}>
-          <Image style={{ width: 24, height: 24 }} source={IMG_SEARCH} />
-        </View>
-      </TouchableOpacity>
+      <View style={{ flexDirection: 'row' }}>
+        <TouchableOpacity onPress={() => navigation.navigate('SearchPage')}>
+          <View style={{ padding: 5, marginRight: 8 }}>
+            <Image style={{ width: 24, height: 24 }} source={IMG_SEARCH} />
+          </View>
+        </TouchableOpacity>
+        {ViewUtils.getMoreMenuButton(() => this.menu.showDialog())}
+      </View>
     )
     const content = languages.length > 0 // 防止 ScrollableTabView 因无法计算 PopularTab 的个数 而导致页面无限渲染
       ? (
@@ -88,6 +117,7 @@ export default class PopularPage extends Component {
           rightButton={rightButton}
         />
         {content}
+        {this.renderMoreMenu()}
       </View>
     )
   }
