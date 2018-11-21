@@ -73,6 +73,7 @@ export default class SearchPage extends Component {
     this.collectionKeys = [] // 所有用户收藏项目的 keys
     this.items = []
     this.isKeysChanged = false // 是否添加了标签
+    this.isCancel = false
   }
 
   componentDidMount = () => {
@@ -114,6 +115,11 @@ export default class SearchPage extends Component {
         return
       }
       const resp = await fetch(reqUrl)
+      if (this.isCancel) {
+        this.setState({ isLoading: false, rightButtonText: '搜索', isShowBottomButton: false })
+        this.isCancel = false
+        return
+      }
       // total_count: 784810, incomplete_results: false, items:...
       const result = JSON.parse(resp._bodyText)
       // !this 页面已销毁
@@ -199,6 +205,7 @@ export default class SearchPage extends Component {
       this.setState({ rightButtonText: '取消' })
       this.loadData(true)
     } else {
+      this.isCancel = true
       this.setState({ rightButtonText: '搜索', isLoading: false })
     }
   }
