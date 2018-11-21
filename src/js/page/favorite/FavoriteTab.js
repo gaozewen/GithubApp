@@ -23,17 +23,19 @@ const styles = StyleSheet.create({
 
 export default class FavoriteTab extends Component {
   static propTypes = {
+    theme: PropTypes.object,
     navigation: PropTypes.object,
     useIn: PropTypes.string,
   }
 
   constructor(props) {
     super(props)
-    const { useIn } = this.props
+    const { theme, useIn } = this.props
     const isPopular = useIn === USE_IN.POPULAR
     this.collectionDao = new CollectionDao(isPopular ? USE_IN.POPULAR : USE_IN.TRENDING)
     this.FavoriteRepoCell = isPopular ? PopularRepoCell : TrendingRepoCell
     this.state = { // 重复数据不渲染
+      theme,
       dataSource: new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 }),
       isLoading: false, // 是否正在加载数据
     }
@@ -89,16 +91,20 @@ export default class FavoriteTab extends Component {
    */
   onSelect = (item, isCollected) => {
     const { navigation } = this.props
+    const { theme } = this.state
     const syncFavoritePage = () => {
       this.syncingData()
       this.emitToSyncData()
     }
-    navigation.navigate('RepositoryDetail', { item, isCollected, syncFavoritePage })
+    navigation.navigate('RepositoryDetail', {
+      theme, item, isCollected, syncFavoritePage,
+    })
   }
 
   renderRow = (repoCell, FavoriteRepoCell) => {
     return (
       <FavoriteRepoCell
+        theme={this.state.theme}
         repoCell={repoCell}
         onSelect={(item, isCollected) => {
           this.onSelect(item, isCollected)
@@ -116,7 +122,7 @@ export default class FavoriteTab extends Component {
   }
 
   render() {
-    const { dataSource, isLoading } = this.state
+    const { theme, dataSource, isLoading } = this.state
     return (
       <View style={styles.root}>
         <ListView
@@ -128,10 +134,10 @@ export default class FavoriteTab extends Component {
             <RefreshControl
               refreshing={isLoading}
               onRefresh={() => this.loadData()}
-              colors={['#2196F3']}
+              colors={[theme.themeColor]}
               title="Loading..."
-              titleColor="#2196F3"
-              tintColor="#2196F3"
+              titleColor={theme.themeColor}
+              tintColor={theme.themeColor}
             />
           )}
         />

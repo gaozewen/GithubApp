@@ -28,13 +28,16 @@ const styles = StyleSheet.create({
 export default class PopularPage extends Component {
   static propTypes = {
     navigation: PropTypes.object,
+    theme: PropTypes.object,
   }
 
   constructor(props) {
     super(props)
+    const { theme } = this.props
     this.languageDao = new LanguageDao(USE_IN.POPULAR)
     this.state = {
       languages: [],
+      theme,
     }
   }
 
@@ -56,29 +59,23 @@ export default class PopularPage extends Component {
   renderMoreMenu() {
     return (
       <MoreMenu
+        theme={this.state.theme}
         {...this.props}
         ref={(menu) => { this.menu = menu }}
         menus={[
           MENU.Custom_Key, MENU.Sort_Key, MENU.Remove_Key,
           MENU.Share, MENU.Custom_Theme, MENU.About_Author, MENU.About,
         ]}
-        onMoreMenuSelect={(e) => {
-          if (e === MENU.Custom_Theme) {
-            // this.setState({
-            //   customThemeViewVisible: true,
-            // })
-          }
-        }}
       />
     )
   }
 
   render() {
     const { navigation } = this.props
-    const { languages } = this.state
+    const { theme, languages } = this.state
     const rightButton = (
       <View style={{ flexDirection: 'row' }}>
-        <TouchableOpacity onPress={() => navigation.navigate('SearchPage')}>
+        <TouchableOpacity onPress={() => navigation.navigate('SearchPage', { theme })}>
           <View style={{ padding: 5, marginRight: 8 }}>
             <Image style={{ width: 24, height: 24 }} source={IMG_SEARCH} />
           </View>
@@ -89,7 +86,7 @@ export default class PopularPage extends Component {
     const content = languages.length > 0 // 防止 ScrollableTabView 因无法计算 PopularTab 的个数 而导致页面无限渲染
       ? (
         <ScrollableTabView
-          tabBarBackgroundColor="#2196F3"
+          tabBarBackgroundColor={theme.themeColor}
           tabBarActiveTextColor="#fff"
           tabBarInactiveTextColor="#fff"
           tabBarUnderlineStyle={{ backgroundColor: '#e7e7e7', height: 2, marginVertical: 1 }}
@@ -102,6 +99,7 @@ export default class PopularPage extends Component {
                   key={item.name}
                   tabLabel={item.name}
                   {...this.props}
+                  theme={theme}
                 />
               )
               : null))
@@ -113,7 +111,7 @@ export default class PopularPage extends Component {
       <View style={styles.root}>
         <HeaderBar
           title="最热"
-          sytle={{ backgroundColor: '#6495ED' }}
+          style={theme.styles.headerBar}
           rightButton={rightButton}
         />
         {content}

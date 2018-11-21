@@ -43,6 +43,7 @@ export default class CustomKeyPage extends Component {
     this.use_in = props.navigation.getParam('useIn', USE_IN.POPULAR)
     this.changeValues = [] // 初始化改变的 checkbox
     this.state = {
+      theme: props.navigation.getParam('theme'),
       dataArray: [],
     }
   }
@@ -137,6 +138,7 @@ export default class CustomKeyPage extends Component {
   }
 
   renderCheckBox = (item) => { // CheckBox
+    const { theme } = this.state
     const leftText = item.name
     const isChecked = item.checked
     return (
@@ -145,8 +147,8 @@ export default class CustomKeyPage extends Component {
         onClick={() => this.onClick(item)}
         leftText={leftText}
         isChecked={isChecked}
-        checkedImage={<Image style={{ tintColor: '#2196F3' }} source={IMG_CHECKED} />}
-        unCheckedImage={<Image style={{ tintColor: '#2196F3' }} source={IMG_UNCHECKED} />}
+        checkedImage={<Image style={theme.styles.icon} source={IMG_CHECKED} />}
+        unCheckedImage={<Image style={theme.styles.icon} source={IMG_UNCHECKED} />}
       />
     )
   }
@@ -178,12 +180,14 @@ export default class CustomKeyPage extends Component {
   }
 
   render() {
+    const { theme } = this.state
     const rightButtonTitle = this.isRemoveKeyPage ? '移除' : '保存' // RemovePage
     let title = this.isRemoveKeyPage ? '标签移除' : '自定义标签'
     title = this.use_in === USE_IN.TRENDING ? '自定义语言' : title
     return (
       <View style={styles.root}>
         <HeaderBar
+          style={theme.styles.headerBar}
           title={title}
           leftButton={ViewUtils.getBackButton(() => { this.onBack() })}
           rightButton={ViewUtils.getRightButton(rightButtonTitle, () => { this.onSave(true) })}

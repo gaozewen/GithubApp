@@ -3,8 +3,10 @@ import PropTypes from 'prop-types'
 import {
   StyleSheet, View, Text,
 } from 'react-native'
-
+// utils
 import NavigatorUtils from '../utils/NavigatorUtils'
+// dao
+import ThemeDao from '../expand/dao/ThemeDao'
 
 const styles = StyleSheet.create({
   root: {
@@ -15,15 +17,20 @@ const styles = StyleSheet.create({
 })
 
 export default class WelcomePage extends Component {
-  propTypes = {
+  static propTypes = {
     navigation: PropTypes.object,
   }
 
-  componentDidMount = () => {
+  // constructor(props) {
+  //   super(props)
+  // }
+
+  componentDidMount = async () => {
     const { navigation } = this.props
+    this.theme = await new ThemeDao().getTheme()
     this.timer = setTimeout(() => {
-      NavigatorUtils.resetToHomePage({ navigation }) // 重置到首页也就是初始页为 HomePage
-    }, 2000)
+      NavigatorUtils.resetToHomePage({ navigation, theme: this.theme, selectedTab: 'tb_popular' }) // 重置到首页也就是初始页为 HomePage
+    }, 500)
   }
 
   componentWillUnmount = () => {

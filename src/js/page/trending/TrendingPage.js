@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-// import PropTypes from 'prop-types'
+import PropTypes from 'prop-types'
 import {
   StyleSheet, View, Image, Text,
   TouchableOpacity,
@@ -29,13 +29,15 @@ const styles = StyleSheet.create({
 
 export default class TrendingPage extends Component {
   static propTypes = {
-
+    theme: PropTypes.object,
   }
 
   constructor(props) {
     super(props)
+    const { theme } = this.props
     this.languageDao = new LanguageDao(USE_IN.TRENDING)
     this.state = {
+      theme,
       timespan: TimespanArray[0],
       languages: [],
     }
@@ -59,6 +61,7 @@ export default class TrendingPage extends Component {
   renderMoreMenu = () => {
     return (
       <MoreMenu
+        theme={this.state.theme}
         {...this.props}
         ref={(menu) => { this.menu = menu }}
         menus={[
@@ -113,12 +116,12 @@ export default class TrendingPage extends Component {
   }
 
   renderContent = () => {
-    const { timespan, languages } = this.state
+    const { theme, timespan, languages } = this.state
     // 防止 ScrollableTabView 因无法计算 TrendingPageTab 的个数 而导致页面无限渲染
     if (languages.length === 0) return null
     return (
       <ScrollableTabView
-        tabBarBackgroundColor="#2196F3"
+        tabBarBackgroundColor={theme.themeColor}
         tabBarActiveTextColor="#fff"
         tabBarInactiveTextColor="#fff"
         tabBarUnderlineStyle={{ backgroundColor: '#e7e7e7', height: 2, marginVertical: 1 }}
@@ -128,6 +131,7 @@ export default class TrendingPage extends Component {
           item.checked
             ? (
               <TrendingTab
+                theme={theme}
                 key={item.name}
                 tabLabel={item.name}
                 timespan={timespan}
@@ -144,6 +148,7 @@ export default class TrendingPage extends Component {
     return (
       <View style={styles.root}>
         <HeaderBar
+          style={this.state.theme.styles.headerBar}
           titleView={this.renderTitleView()}
           rightButton={ViewUtils.getMoreMenuButton(() => this.menu.showDialog())}
         />

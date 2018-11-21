@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-// import PropTypes from 'prop-types'
+import PropTypes from 'prop-types'
 import {
   StyleSheet, View,
 } from 'react-native'
@@ -24,12 +24,13 @@ const styles = StyleSheet.create({
 
 export default class FavoritePage extends Component {
   static propTypes = {
-
+    theme: PropTypes.object,
   }
 
   constructor(props) {
     super(props)
     this.state = {
+      theme: this.props.theme,
     }
   }
 
@@ -40,34 +41,29 @@ export default class FavoritePage extends Component {
   renderMoreMenu = () => {
     return (
       <MoreMenu
+        theme={this.state.theme}
         {...this.props}
         ref={(menu) => { this.menu = menu }}
         menus={[
           MENU.Share, MENU.Custom_Theme,
           MENU.About_Author, MENU.About,
         ]}
-        onMoreMenuSelect={(e) => {
-          if (e === MENU.Custom_Theme) {
-            // this.setState({
-            //   customThemeViewVisible: true,
-            // })
-          }
-        }}
       />
     )
   }
 
   renderContent = () => {
+    const { theme } = this.state
     return (
       <ScrollableTabView
-        tabBarBackgroundColor="#2196F3"
+        tabBarBackgroundColor={theme.themeColor}
         tabBarActiveTextColor="#fff"
         tabBarInactiveTextColor="#fff"
         tabBarUnderlineStyle={{ backgroundColor: '#e7e7e7', height: 2, marginVertical: 1 }}
         renderTabBar={() => <ScrollableTabBar />}
       >
-        <FavoriteTab tabLabel="最热" useIn={USE_IN.POPULAR} {...this.props} />
-        <FavoriteTab tabLabel="趋势" useIn={USE_IN.TRENDING} {...this.props} />
+        <FavoriteTab tabLabel="最热" useIn={USE_IN.POPULAR} {...this.props} theme={theme} />
+        <FavoriteTab tabLabel="趋势" useIn={USE_IN.TRENDING} {...this.props} theme={theme} />
       </ScrollableTabView>
     )
   }
@@ -76,6 +72,7 @@ export default class FavoritePage extends Component {
     return (
       <View style={styles.root}>
         <HeaderBar
+          style={this.state.theme.styles.headerBar}
           title="收藏"
           rightButton={ViewUtils.getMoreMenuButton(() => this.menu.showDialog())}
         />

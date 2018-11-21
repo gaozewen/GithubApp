@@ -19,6 +19,8 @@ import FavoritePage from './favorite/FavoritePage'
 import MyPage from './my/MyPage'
 // eimit
 import EmitActions from '../constants/EmitActions'
+// dao
+import ThemeDao from '../expand/dao/ThemeDao'
 
 const styles = StyleSheet.create({
   container: {
@@ -47,9 +49,12 @@ export default class HomePage extends Component {
 
   constructor(props) {
     super(props)
-    const selectedTab = this.props.navigation.getParam('selectedTab', 'tb_my')
+    const { navigation } = props
+    const selectedTab = navigation.getParam('selectedTab', 'tb_my')
+    const theme = navigation.getParam('theme')
     this.state = {
       selectedTab, // 初始化 默认选中的 tab 页
+      theme, // 主题
     }
   }
 
@@ -66,13 +71,14 @@ export default class HomePage extends Component {
     }
   }
 
-  onAction = (action) => {
+  onAction = async (action) => {
     const { navigation } = this.props
     const { selectedTab } = this.state
+    const theme = await new ThemeDao().getTheme()
     switch (action) {
       case EmitActions.SYNC_HOME_PAGE.FROM_CUSTOM_PAGE:
       case EmitActions.SYNC_HOME_PAGE.FROM_SEARCH_PAGE:
-        NavigatorUtils.resetToHomePage({ navigation, selectedTab })
+        NavigatorUtils.resetToHomePage({ theme, navigation, selectedTab })
         break
       default:
         break
@@ -90,17 +96,23 @@ export default class HomePage extends Component {
    * @memberof HomePage
    */
   renderTabItem(PageComponent, selectedTab, title, iconImg) {
+    const { theme } = this.state
     return (
       <TabNavigator.Item
         selected={this.state.selectedTab === selectedTab}
-        selectedTitleStyle={{ color: '#2196F3' }}
+        selectedTitleStyle={theme.styles.selectedTitle}
         title={title}
         renderIcon={() => <Image style={styles.image} source={iconImg} />}
-        renderSelectedIcon={() => <Image style={[styles.image, { tintColor: '#2196F3' }]} source={iconImg} />}
+        renderSelectedIcon={() => (
+          <Image
+            style={[styles.image, theme.styles.icon]}
+            source={iconImg}
+          />
+        )}
         // badgeText="1"
         onPress={() => this.setState({ selectedTab })}
       >
-        <PageComponent navigation={this.props.navigation} />
+        <PageComponent navigation={this.props.navigation} theme={theme} />
       </TabNavigator.Item>
     )
   }

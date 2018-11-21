@@ -107,6 +107,9 @@ class AboutCommon {
     this.repos = []
     this.collectionKeys = null // 为什么设置为 null 因为判断会方便一些
     this.repoUtils = new RepoUtils(this)
+    this.state = {
+      theme: this.props.navigation.getParam('theme'),
+    }
   }
 
   componentDidMount = () => {
@@ -147,7 +150,10 @@ class AboutCommon {
 
   onSelect = (item, isCollected, syncCellStarState) => {
     const { navigation } = this.props
-    navigation.navigate('RepositoryDetail', { item, isCollected, syncCellStarState })
+    const { theme } = this.state
+    navigation.navigate('RepositoryDetail', {
+      theme, item, isCollected, syncCellStarState,
+    })
   }
 
   renderRepoCells(repoCellArray) { // 渲染 当前app 这个项目，或 作者的所有开源项目
@@ -155,6 +161,7 @@ class AboutCommon {
     const cells = repoCellArray.map((repoCell) => {
       return (
         <PopularRepoCell
+          theme={this.state.theme}
           key={repoCell.item}
           repoCell={repoCell}
           onSelect={(item, isCollected, syncCellStarState) => {
@@ -228,7 +235,7 @@ class AboutCommon {
     const config = this.getParallaxConfig(params)
     return (
       <ParallaxScrollView
-        backgroundColor="#2196F3"
+        backgroundColor={this.state.theme.themeColor}
         headerBackgroundColor="#333"
         stickyHeaderHeight={STICKY_HEADER_HEIGHT}
         parallaxHeaderHeight={PARALLAX_HEADER_HEIGHT}

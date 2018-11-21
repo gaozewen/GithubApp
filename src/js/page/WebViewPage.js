@@ -23,7 +23,9 @@ export default class WebViewPage extends Component {
     const { navigation } = this.props
     const url = navigation.getParam('url', 'https://blog.csdn.net/github_38313789')
     const title = navigation.getParam('title', '高泽文的博客')
+    const theme = navigation.getParam('theme')
     this.state = {
+      theme,
       url,
       title,
       canGoBack: false,
@@ -48,14 +50,17 @@ export default class WebViewPage extends Component {
   }
 
   render() {
-    const { url, title } = this.state
+    const { theme, url, title } = this.state
     return (
       <View style={styles.root}>
         <HeaderBar
+          style={theme.styles.headerBar}
           title={title}
           leftButton={ViewUtils.getBackButton(() => { this.onBackPress() })}
         />
         <WebView
+          style={{ zIndex: -1 }}
+          startInLoadingState
           ref={(webView) => { this.webView = webView }}
           source={{ uri: url }}
           onNavigationStateChange={e => this.onNavigationStateChange(e)}

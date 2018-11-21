@@ -61,6 +61,7 @@ export default class SearchPage extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      theme: this.props.navigation.getParam('theme'),
       rightButtonText: '搜索',
       isLoading: false,
       dataSource: new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 }),
@@ -189,7 +190,7 @@ export default class SearchPage extends Component {
         placeholder="请输入标签"
         placeholderTextColor="#9E9E9E"
         clearTextOnFocus
-        selectionColor="#2196F3"
+        selectionColor={this.state.theme.themeColor}
         underlineColorAndroid="transparent"
         returnKeyType="search"
         onChangeText={(text) => { this.text = text }}
@@ -224,6 +225,7 @@ export default class SearchPage extends Component {
   renderHeaderBar = () => {
     return (
       <HeaderBar
+        style={this.state.theme.styles.headerBar}
         titleView={this.getTitleView()}
         leftButton={ViewUtils.getBackButton(() => { this.onBackPress() })}
         rightButton={this.getRightButton()}
@@ -234,12 +236,16 @@ export default class SearchPage extends Component {
   // list start
   onSelect = (item, isCollected, syncCellStarState) => {
     const { navigation } = this.props
-    navigation.navigate('RepositoryDetail', { item, isCollected, syncCellStarState })
+    const { theme } = this.state
+    navigation.navigate('RepositoryDetail', {
+      theme, item, isCollected, syncCellStarState,
+    })
   }
 
   renderRow = (repoCell) => {
     return (
       <PopularRepoCell
+        theme={this.state.theme}
         repoCell={repoCell}
         onSelect={(item, isCollected, syncCellStarState) => {
           this.onSelect(item, isCollected, syncCellStarState)
@@ -258,7 +264,7 @@ export default class SearchPage extends Component {
   }
 
   renderList = () => {
-    const { dataSource, isLoading } = this.state
+    const { theme, dataSource, isLoading } = this.state
     return (
       <ListView
         dataSource={dataSource}
@@ -269,10 +275,10 @@ export default class SearchPage extends Component {
           <RefreshControl
             refreshing={isLoading}
             onRefresh={() => this.loadData(true)}
-            colors={['#2196F3']}
+            colors={[theme.themeColor]}
             title="Loading..."
-            titleColor="#2196F3"
-            tintColor="#2196F3"
+            titleColor={theme.themeColor}
+            tintColor={theme.themeColor}
           />
         )}
       />
@@ -302,7 +308,7 @@ export default class SearchPage extends Component {
   renderBottomButton = () => {
     return (
       <TouchableOpacity
-        style={[styles.bottomButton, { backgroundColor: '#2196F3' }]}
+        style={[styles.bottomButton, { backgroundColor: this.state.theme.themeColor }]}
         onPress={() => this.saveKey()}
       >
         <View>

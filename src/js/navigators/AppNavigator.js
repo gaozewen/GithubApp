@@ -17,12 +17,13 @@ import AboutPage from '../page/about/AboutPage'
 import WebViewPage from '../page/WebViewPage'
 import AboutMePage from '../page/about/AboutMePage'
 import SearchPage from '../page/search/SearchPage'
+import CustomTheme from '../page/my/CustomTheme'
 
 const AppNavigator = StackNavigator(
   {
     // TrendingTest: { screen: TrendingTest },
-    HomePage: { screen: HomePage },
     WelcomePage: { screen: WelcomePage },
+    HomePage: { screen: HomePage },
     CustomKeyPage: { screen: CustomKeyPage },
     SortKeyPage: { screen: SortKeyPage },
     RepositoryDetail: { screen: RepositoryDetail },
@@ -30,6 +31,7 @@ const AppNavigator = StackNavigator(
     WebViewPage: { screen: WebViewPage },
     AboutMePage: { screen: AboutMePage },
     SearchPage: { screen: SearchPage },
+    CustomTheme: { screen: CustomTheme },
   },
   {
     navigationOptions: {

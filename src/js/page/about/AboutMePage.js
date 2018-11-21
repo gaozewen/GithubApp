@@ -77,6 +77,7 @@ export default class AboutMePage extends Component {
     this.aboutCommon = new AboutCommon(props, state => this.updateState(state),
       ABOUT_IN.ABOUT_AUTHOR)
     this.state = {
+      theme: this.props.navigation.getParam('theme'),
       repoCellArray: [],
       isShowRepos: false,
       isShowBlog: false,
@@ -104,12 +105,13 @@ export default class AboutMePage extends Component {
    */
   renderItems = (dic, isShowAccount) => {
     if (!dic) return null
+    const { theme } = this.state
     const views = []
     Object.keys(dic).forEach((key) => {
       const title = isShowAccount ? `${dic[key].title}:${dic[key].account}` : dic[key].title
       views.push(
         <View key={key}>
-          {ViewUtils.getSettingItem(() => this.onClick(dic[key]), null, title, { tintColor: '#2196F3' })}
+          {ViewUtils.getSettingItem(() => this.onClick(dic[key]), null, title, theme.styles.icon)}
         </View>,
       )
     })
@@ -118,6 +120,7 @@ export default class AboutMePage extends Component {
 
   onClick = (tab) => {
     const { navigation } = this.props
+    const { theme } = this.state
     let routeName
     let params
     switch (tab) {
@@ -130,6 +133,7 @@ export default class AboutMePage extends Component {
       case PAGE_MENU.BLOG.items.GITHUB:
         routeName = 'WebViewPage'
         params = {
+          theme,
           title: tab.title,
           url: tab.url,
         }
@@ -177,24 +181,24 @@ export default class AboutMePage extends Component {
       backgroundImg: 'http://www.devio.org/io/GitHubPopular/img/for_githubpopular_about_me.jpg',
     }
     const {
-      isShowBlog, isShowRepos, repoCellArray, isShowQQ, isShowContact,
+      theme, isShowBlog, isShowRepos, repoCellArray, isShowQQ, isShowContact,
     } = this.state
     const content = (
       <View>
         {ViewUtils.getSettingItem(() => this.onClick(PAGE_MENU.BLOG), MENU.Website.icon,
-          PAGE_MENU.BLOG.name, { tintColor: '#2196F3' }, this.getClickIcon(isShowBlog))}
+          PAGE_MENU.BLOG.name, theme.styles.icon, this.getClickIcon(isShowBlog))}
         {isShowBlog ? this.renderItems(PAGE_MENU.BLOG.items) : null}
 
         {ViewUtils.getSettingItem(() => this.onClick(PAGE_MENU.REPOSITORY), IMG_CODE,
-          PAGE_MENU.REPOSITORY, { tintColor: '#2196F3' }, this.getClickIcon(isShowRepos))}
+          PAGE_MENU.REPOSITORY, theme.styles.icon, this.getClickIcon(isShowRepos))}
         {isShowRepos ? this.aboutCommon.renderRepoCells(repoCellArray) : null}
 
         {ViewUtils.getSettingItem(() => this.onClick(PAGE_MENU.QQ), MENU.Website.icon,
-          PAGE_MENU.QQ.name, { tintColor: '#2196F3' }, this.getClickIcon(isShowBlog))}
+          PAGE_MENU.QQ.name, theme.styles.icon, this.getClickIcon(isShowBlog))}
         {isShowQQ ? this.renderItems(PAGE_MENU.QQ.items, true) : null}
 
         {ViewUtils.getSettingItem(() => this.onClick(PAGE_MENU.CONTACT), IMG_CONTACT,
-          PAGE_MENU.CONTACT.name, { tintColor: '#2196F3' }, this.getClickIcon(isShowContact))}
+          PAGE_MENU.CONTACT.name, theme.styles.icon, this.getClickIcon(isShowContact))}
         {isShowContact ? this.renderItems(PAGE_MENU.CONTACT.items, true) : null}
       </View>
     )

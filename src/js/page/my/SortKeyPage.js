@@ -35,6 +35,7 @@ export default class SortKeyPage extends Component {
     this.originalWholeArray = [] // ↓ 原始完整数组，用来做对比
     this.originalCheckedArray = [] // ↓ 原始的 被选中的 标签
     this.state = {
+      theme: this.props.navigation.getParam('theme'),
       sortingArray: [], // ↓ 正在被排序的，checked 的数组
     }
     this.sortedWholeArray = [] // ↓ 排序后的完整的数组
@@ -108,6 +109,7 @@ export default class SortKeyPage extends Component {
   }
 
   render() {
+    const { theme } = this.state
     const rightButton = (
       <TouchableOpacity
         onPress={() => { this.onSave() }}
@@ -122,7 +124,7 @@ export default class SortKeyPage extends Component {
       <View style={styles.root}>
         <HeaderBar
           title={title}
-          sytle={{ backgroundColor: '#6495ED' }}
+          style={theme.styles.headerBar}
           leftButton={ViewUtils.getBackButton(() => { this.onBack() })}
           rightButton={rightButton}
         />
@@ -135,7 +137,7 @@ export default class SortKeyPage extends Component {
             this.state.sortingArray.splice(e.to, 0, this.state.sortingArray.splice(e.from, 1)[0])
             // this.forceUpdate() // 强制刷新，即强制 执行 render() 方法
           }}
-          renderRow={row => <SortCell data={row} />}
+          renderRow={row => <SortCell theme={theme} data={row} />}
         />
       </View>
     )

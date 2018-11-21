@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {
-  Linking, StatusBar,
+  Linking,
 } from 'react-native'
 // commons
 import MenuDialog from '../common/MenuDialog'
@@ -12,8 +12,8 @@ import { USE_IN } from '../expand/dao/LanguageDao'
 
 export default class MoreMenu extends Component {
   static propTypes = {
+    theme: PropTypes.object,
     menus: PropTypes.array.isRequired,
-    // theme: PropTypes.object,
     navigation: PropTypes.object.isRequired,
   }
 
@@ -28,7 +28,7 @@ export default class MoreMenu extends Component {
   onMoreMenuSelect = (tab) => {
     this.closeDialog()
 
-    const { navigation } = this.props
+    const { theme, navigation } = this.props
     let routeName
     let params
 
@@ -36,31 +36,35 @@ export default class MoreMenu extends Component {
     switch (tab) {
       case MENU.Custom_Key:
         routeName = 'CustomKeyPage'
-        params = { useIn: USE_IN.POPULAR }
+        params = { theme, useIn: USE_IN.POPULAR }
         break
       case MENU.Sort_Key:
         routeName = 'SortKeyPage'
-        params = { useIn: USE_IN.POPULAR }
+        params = { theme, useIn: USE_IN.POPULAR }
         break
       case MENU.Remove_Key:
         routeName = 'CustomKeyPage'
-        params = { isRemoveKeyPage: true, useIn: USE_IN.POPULAR }
+        params = { theme, isRemoveKeyPage: true, useIn: USE_IN.POPULAR }
         break
       case MENU.Custom_Language:
         routeName = 'CustomKeyPage'
-        params = { useIn: USE_IN.TRENDING }
+        params = { theme, useIn: USE_IN.TRENDING }
         break
       case MENU.Sort_Language:
         routeName = 'SortKeyPage'
-        params = { useIn: USE_IN.TRENDING }
+        params = { theme, useIn: USE_IN.TRENDING }
         break
       case MENU.Custom_Theme:
+        routeName = 'CustomTheme'
+        params = { theme }
         break
       case MENU.About_Author:
         routeName = 'AboutMePage'
+        params = { theme }
         break
       case MENU.About:
         routeName = 'AboutPage'
+        params = { theme }
         break
       case MENU.Feedback:
         Linking.canOpenURL(url).then((supported) => {
@@ -82,15 +86,12 @@ export default class MoreMenu extends Component {
   }
 
   render() {
-    const {
-      // theme,
-      menus,
-    } = this.props
+    const { theme, menus } = this.props
     return (
       <MenuDialog
+        theme={theme}
         ref={(dialog) => { this.dialog = dialog }}
         menus={menus}
-        // theme={theme}
         onSelect={tab => this.onMoreMenuSelect(tab)}
       />
     )

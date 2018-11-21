@@ -45,7 +45,15 @@ const styles = StyleSheet.create({
 
 export default class MyPage extends Component {
   static propTypes = {
+    theme: PropTypes.object,
     navigation: PropTypes.object,
+  }
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      theme: this.props.theme,
+    }
   }
 
   componentDidMount = () => {
@@ -54,37 +62,41 @@ export default class MyPage extends Component {
 
   onClick = (navigateTo) => {
     const { navigation } = this.props
+    const { theme } = this.state
     let routeName
     let params
     switch (navigateTo) {
       case MENU.About:
         routeName = 'AboutPage'
-        params = {}
+        params = { theme }
         break
       case MENU.Custom_Key:
         routeName = 'CustomKeyPage'
-        params = { useIn: USE_IN.POPULAR }
+        params = { theme, useIn: USE_IN.POPULAR }
         break
       case MENU.Sort_Key:
         routeName = 'SortKeyPage'
-        params = { useIn: USE_IN.POPULAR }
+        params = { theme, useIn: USE_IN.POPULAR }
         break
       case MENU.Remove_Key:
         routeName = 'CustomKeyPage'
-        params = { isRemoveKeyPage: true, useIn: USE_IN.POPULAR }
+        params = { theme, isRemoveKeyPage: true, useIn: USE_IN.POPULAR }
         break
       case MENU.Custom_Language:
         routeName = 'CustomKeyPage'
-        params = { useIn: USE_IN.TRENDING }
+        params = { theme, useIn: USE_IN.TRENDING }
         break
       case MENU.Sort_Language:
         routeName = 'SortKeyPage'
-        params = { useIn: USE_IN.TRENDING }
+        params = { theme, useIn: USE_IN.TRENDING }
         break
       case MENU.Custom_Theme:
+        routeName = 'CustomTheme'
+        params = { theme }
         break
       case MENU.About_Author:
         routeName = 'AboutMePage'
+        params = { theme }
         break
       default:
         break
@@ -95,23 +107,26 @@ export default class MyPage extends Component {
   }
 
   getItem(tag, icon, text) {
-    return ViewUtils.getSettingItem(() => this.onClick(tag), icon, text, { tintColor: '#2196F3' })
+    return ViewUtils.getSettingItem(
+      () => this.onClick(tag), icon, text, this.state.theme.styles.icon,
+    )
   }
 
   renderLogo = () => {
+    const { theme } = this.state
     return (
       <TouchableHighlight onPress={() => this.onClick(MENU.About)}>
         <View style={styles.logo}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Image
               source={IMG_TRENDING}
-              style={[{ width: 40, height: 40, marginRight: 10 }, { tintColor: '#2196F3' }]}
+              style={[{ width: 40, height: 40, marginRight: 10 }, theme.styles.icon]}
             />
             <Text style={{ color: '#757575' }}>GitHub Popular</Text>
           </View>
           <Image
             source={IMG_TIAOZHUAN}
-            style={[{ marginRight: 10, height: 22, width: 22 }, { tintColor: '#2196F3' }]}
+            style={[{ marginRight: 10, height: 22, width: 22 }, theme.styles.icon]}
           />
         </View>
       </TouchableHighlight>
@@ -123,7 +138,7 @@ export default class MyPage extends Component {
       <View style={styles.root}>
         <HeaderBar
           title="我的"
-          sytle={{ backgroundColor: '#2196F3' }}
+          style={this.state.theme.styles.headerBar}
         />
         <ScrollView>
           {/* Logo */}

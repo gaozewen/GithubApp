@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
 
 export default class TrendingRepoCell extends Component {
   static propTypes = {
+    theme: PropTypes.object,
     repoCell: PropTypes.object,
     onSelect: PropTypes.func, // 点击 小卡片
     onCollect: PropTypes.func, // 点击 小星星
@@ -74,8 +75,10 @@ export default class TrendingRepoCell extends Component {
 
   constructor(props) {
     super(props)
-    const { isCollected } = this.props.repoCell
+    const { theme, repoCell } = this.props
+    const { isCollected } = repoCell
     this.state = {
+      theme,
       isCollected,
       collectionIcon: isCollected ? IMG_STAR : IMG_UNSTAR,
     }
@@ -105,6 +108,7 @@ export default class TrendingRepoCell extends Component {
   }
 
   renderCollectionButton = () => {
+    const { theme } = this.state
     return (
       <TouchableOpacity
         style={{
@@ -112,7 +116,7 @@ export default class TrendingRepoCell extends Component {
         }}
         onPress={() => this.onPressHandler()}
       >
-        <Image style={styles.star} source={this.state.collectionIcon} />
+        <Image style={[styles.star, theme.styles.icon]} source={this.state.collectionIcon} />
       </TouchableOpacity>
     )
   }
@@ -120,7 +124,7 @@ export default class TrendingRepoCell extends Component {
   render() {
     const { repoCell, onSelect } = this.props
     const { item } = repoCell
-    const { isCollected } = this.state
+    const { theme, isCollected } = this.state
     return (
       <TouchableOpacity
         style={styles.root}
@@ -138,7 +142,7 @@ export default class TrendingRepoCell extends Component {
             stylesheet={{ p: styles.desc, a: styles.desc }}
           />
 
-          <Text style={{ color: '#2196F3', marginBottom: 6 }}>{item.meta}</Text>
+          <Text style={{ color: theme.themeColor, marginBottom: 6 }}>{item.meta}</Text>
 
           <View style={styles.bottom}>
 
@@ -152,7 +156,6 @@ export default class TrendingRepoCell extends Component {
 
             </View>
 
-            {/* <Image style={styles.star} source={IMG_STAR} /> */}
             <View style={{ width: 22, height: 22 }} />
           </View>
           {this.renderCollectionButton()}

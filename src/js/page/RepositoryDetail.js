@@ -29,7 +29,8 @@ export default class RepositoryDetail extends Component {
 
   constructor(props) {
     super(props)
-    this.item = this.props.navigation.getParam('item')
+    const { navigation } = this.props
+    this.item = navigation.getParam('item')
     const title = this.item.full_name || this.item.fullName // 前者为 popular 后者 为 trending 页的数据
     const url = this.item.html_url || (TRENDING_URL + title)
 
@@ -37,6 +38,7 @@ export default class RepositoryDetail extends Component {
     this.syncCellStarState = this.props.navigation.getParam('syncCellStarState', null)
     this.syncFavoritePage = this.props.navigation.getParam('syncFavoritePage', null)
     this.state = {
+      theme: navigation.getParam('theme'),
       title,
       url,
       canGoBack: false,
@@ -105,12 +107,12 @@ export default class RepositoryDetail extends Component {
   }
 
   render() {
-    const { title, url } = this.state
+    const { theme, title, url } = this.state
     return (
       <View style={styles.root}>
         <HeaderBar
           title={title}
-          sytle={{ backgroundColor: '#6495ED' }}
+          style={theme.styles.headerBar}
           leftButton={ViewUtils.getBackButton(() => { this.onBack() })}
           rightButton={this.renderRightButton()}
         />

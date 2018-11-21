@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
 
 export default class SortCell extends Component {
   static propTypes = {
+    theme: PropTypes.object,
     data: PropTypes.object,
   }
 
@@ -38,7 +39,7 @@ export default class SortCell extends Component {
   }
 
   render() {
-    const { data, sortHandlers } = this.props
+    const { theme, data, sortHandlers } = this.props
     return (
       <TouchableHighlight
         underlayColor="#eee"
@@ -46,7 +47,7 @@ export default class SortCell extends Component {
         {...sortHandlers}
       >
         <View style={styles.row}>
-          <Image style={styles.img} source={IMG_SORT} />
+          <Image style={[styles.img, theme.styles.icon]} source={IMG_SORT} />
           <Text>{data.name}</Text>
         </View>
       </TouchableHighlight>

@@ -60,10 +60,10 @@ const styles = StyleSheet.create({
  */
 export default class MenuDialog extends Component {
   static propTypes = {
+    theme: PropTypes.object,
     menus: PropTypes.array.isRequired,
     onSelect: PropTypes.func.isRequired,
     onClose: PropTypes.func,
-    // theme: PropTypes.object,
   }
 
   state = {
@@ -86,8 +86,7 @@ export default class MenuDialog extends Component {
 
   render() {
     const {
-      menus, onSelect, onClose,
-      // theme,
+      theme, menus, onSelect, onClose,
     } = this.props
     const { visiable } = this.state
     return (
@@ -121,7 +120,7 @@ export default class MenuDialog extends Component {
                     resizeMode="stretch"
                     style={[
                       styles.icon, { tintColor: '#2196F3' },
-                      // theme.styles.tabBarSelectedIcon,
+                      theme.styles.icon,
                     ]}
                   />
                   <Text style={styles.text}>{item.name}</Text>

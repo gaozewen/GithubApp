@@ -66,6 +66,7 @@ const styles = StyleSheet.create({
 
 export default class PopularRepoCell extends Component {
   static propTypes = {
+    theme: PropTypes.object,
     repoCell: PropTypes.object,
     onSelect: PropTypes.func, // 点击 小卡片
     onCollect: PropTypes.func, // 点击 小星星
@@ -73,8 +74,10 @@ export default class PopularRepoCell extends Component {
 
   constructor(props) {
     super(props)
-    const { isCollected } = this.props.repoCell
+    const { theme, repoCell } = this.props
+    const { isCollected } = repoCell
     this.state = {
+      theme,
       isCollected,
       collectionIcon: isCollected ? IMG_STAR : IMG_UNSTAR,
     }
@@ -104,6 +107,7 @@ export default class PopularRepoCell extends Component {
   }
 
   renderCollectionButton = () => {
+    const { theme } = this.state
     return (
       <TouchableOpacity
         style={{
@@ -111,7 +115,7 @@ export default class PopularRepoCell extends Component {
         }}
         onPress={() => this.onPressHandler()}
       >
-        <Image style={styles.star} source={this.state.collectionIcon} />
+        <Image style={[styles.star, theme.styles.icon]} source={this.state.collectionIcon} />
       </TouchableOpacity>
     )
   }
@@ -120,7 +124,7 @@ export default class PopularRepoCell extends Component {
   render() {
     const { repoCell, onSelect } = this.props
     const { item } = repoCell
-    const { isCollected } = this.state
+    const { theme, isCollected } = this.state
     return (
       <TouchableOpacity
         style={styles.root}
@@ -143,7 +147,7 @@ export default class PopularRepoCell extends Component {
 
             <View style={styles.bottom_item}>
               <Text style={{ color: '#757575' }}>Stars：</Text>
-              <Text style={{ color: '#2196F3' }}>{item.stargazers_count}</Text>
+              <Text style={{ color: theme.themeColor }}>{item.stargazers_count}</Text>
             </View>
             <View style={{ width: 22, height: 22 }} />
 

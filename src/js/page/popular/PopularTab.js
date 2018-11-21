@@ -37,11 +37,14 @@ const collectionDao = new CollectionDao(USE_IN.POPULAR)
 export default class PopularTab extends Component {
   static propTypes = {
     navigation: PropTypes.object,
+    theme: PropTypes.object,
   }
 
   constructor(props) {
     super(props)
+    const { theme } = this.props
     this.state = {
+      theme,
       // 重复数据不渲染
       dataSource: new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 }),
       isLoading: false, // 是否正在加载数据
@@ -133,12 +136,16 @@ export default class PopularTab extends Component {
    */
   onSelect = (item, isCollected, syncCellStarState) => {
     const { navigation } = this.props
-    navigation.navigate('RepositoryDetail', { item, isCollected, syncCellStarState })
+    const { theme } = this.state
+    navigation.navigate('RepositoryDetail', {
+      theme, item, isCollected, syncCellStarState,
+    })
   }
 
   renderRow = (repoCell) => {
     return (
       <PopularRepoCell
+        theme={this.state.theme}
         repoCell={repoCell}
         onSelect={(item, isCollected, syncCellStarState) => {
           this.onSelect(item, isCollected, syncCellStarState)
@@ -158,7 +165,7 @@ export default class PopularTab extends Component {
 
 
   render() {
-    const { dataSource, isLoading } = this.state
+    const { theme, dataSource, isLoading } = this.state
     return (
       <View style={styles.root}>
         <ListView
@@ -170,10 +177,10 @@ export default class PopularTab extends Component {
             <RefreshControl
               refreshing={isLoading}
               onRefresh={() => this.loadData(DATA_TYPE.REFRESHING)}
-              colors={['#2196F3']}
+              colors={[theme.themeColor]}
               title="Loading..."
-              titleColor="#2196F3"
-              tintColor="#2196F3"
+              titleColor={theme.themeColor}
+              tintColor={theme.themeColor}
             />
           )}
         />

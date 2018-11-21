@@ -101,6 +101,7 @@ export default class WebViewTest extends Component {
           </Text>
         </View>
         <WebView
+          style={{ zIndex: -1 }}
           ref={(webView) => { this.webView = webView }}
           source={{ uri: url }}
           onNavigationStateChange={e => this.onNavigationStateChange(e)}
