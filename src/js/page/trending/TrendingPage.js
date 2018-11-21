@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import {
   StyleSheet, View, Image, Text,
@@ -20,6 +20,8 @@ import MoreMenu from '../MoreMenu'
 import { MENU } from '../../constants/Menu'
 // utils
 import ViewUtils from '../../utils/ViewUtils'
+// base
+import BaseComponent from '../BaseComponent'
 
 const styles = StyleSheet.create({
   root: {
@@ -27,7 +29,7 @@ const styles = StyleSheet.create({
   },
 })
 
-export default class TrendingPage extends Component {
+export default class TrendingPage extends BaseComponent {
   static propTypes = {
     theme: PropTypes.object,
   }
@@ -54,11 +56,12 @@ export default class TrendingPage extends Component {
   }
 
   componentDidMount = () => {
+    super.componentDidMount()
     this.initData()
   }
 
   // 渲染更多菜单
-  renderMoreMenu = () => {
+  renderMoreMenu() {
     return (
       <MoreMenu
         theme={this.state.theme}
@@ -80,7 +83,7 @@ export default class TrendingPage extends Component {
     )
   }
 
-  renderTitleView = () => {
+  renderTitleView() {
     const { timespan } = this.state
     return (
       <View>
@@ -106,7 +109,7 @@ export default class TrendingPage extends Component {
     this.setState({ timespan })
   }
 
-  renderTrendingDialog = () => {
+  renderTrendingDialog() {
     return (
       <TrendingDialog
         ref={(dialog) => { this.dialog = dialog }}
@@ -115,7 +118,7 @@ export default class TrendingPage extends Component {
     )
   }
 
-  renderContent = () => {
+  renderContent() {
     const { theme, timespan, languages } = this.state
     // 防止 ScrollableTabView 因无法计算 TrendingPageTab 的个数 而导致页面无限渲染
     if (languages.length === 0) return null

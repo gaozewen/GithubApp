@@ -6,7 +6,7 @@ import {
 // commons
 import HeaderBar from '../../common/HeaderBar'
 // constants
-import { THEMES } from '../../constants/Themes'
+import ThemeFactory, { THEMES } from '../../constants/Themes'
 import EmitActions from '../../constants/EmitActions'
 // utils
 import ViewUtils from '../../utils/ViewUtils'
@@ -66,11 +66,11 @@ export default class CustomTheme extends Component {
   async onSelectTheme(themeKey) {
     await new ThemeDao().save(THEMES[themeKey])
     DeviceEventEmitter.emit(
-      EmitActions.SYNC_HOME_PAGE.EVENT, EmitActions.SYNC_HOME_PAGE.FROM_CUSTOM_PAGE,
+      EmitActions.SYNC_BASE.EVENT,
+      EmitActions.SYNC_BASE.SYNC_THEME, // action
+      ThemeFactory.createTheme(THEMES[themeKey]), // params
     )
-    // this.onBack()
-    // DeviceEventEmitter.emit('ACTION_BASE', ACTION_HOME.A_THEME,
-    // ThemeFactory.createTheme(ThemeFlags[themeKey]))
+    this.onBack()
   }
 
   renderThemeItem = (themeKey) => {

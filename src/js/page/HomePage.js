@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import {
   StyleSheet, View, Image, DeviceEventEmitter,
@@ -17,10 +17,12 @@ import PopularPage from './popular/PopularPage'
 import TrendingPage from './trending/TrendingPage'
 import FavoritePage from './favorite/FavoritePage'
 import MyPage from './my/MyPage'
-// eimit
+// emit
 import EmitActions from '../constants/EmitActions'
 // dao
 import ThemeDao from '../expand/dao/ThemeDao'
+// base
+import BaseComponent from './BaseComponent'
 
 const styles = StyleSheet.create({
   container: {
@@ -42,7 +44,7 @@ const styles = StyleSheet.create({
   },
 })
 
-export default class HomePage extends Component {
+export default class HomePage extends BaseComponent {
   static propTypes = {
     navigation: PropTypes.object,
   }
@@ -59,6 +61,7 @@ export default class HomePage extends Component {
   }
 
   componentDidMount = () => {
+    super.componentDidMount()
     this.listener = DeviceEventEmitter.addListener(
       EmitActions.SYNC_HOME_PAGE.EVENT,
       action => this.onAction(action),
@@ -66,6 +69,7 @@ export default class HomePage extends Component {
   }
 
   componentWillUnmount = () => {
+    super.componentWillUnmount()
     if (this.listener) {
       this.listener.remove()
     }

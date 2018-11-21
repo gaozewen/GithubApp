@@ -75,10 +75,9 @@ export default class TrendingRepoCell extends Component {
 
   constructor(props) {
     super(props)
-    const { theme, repoCell } = this.props
+    const { repoCell } = this.props
     const { isCollected } = repoCell
     this.state = {
-      theme,
       isCollected,
       collectionIcon: isCollected ? IMG_STAR : IMG_UNSTAR,
     }
@@ -108,7 +107,7 @@ export default class TrendingRepoCell extends Component {
   }
 
   renderCollectionButton = () => {
-    const { theme } = this.state
+    const { theme } = this.props
     return (
       <TouchableOpacity
         style={{
@@ -122,9 +121,9 @@ export default class TrendingRepoCell extends Component {
   }
 
   render() {
-    const { repoCell, onSelect } = this.props
+    const { theme, repoCell, onSelect } = this.props
     const { item } = repoCell
-    const { theme, isCollected } = this.state
+    const { isCollected } = this.state
     return (
       <TouchableOpacity
         style={styles.root}

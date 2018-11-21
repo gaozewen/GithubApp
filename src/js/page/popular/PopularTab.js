@@ -68,9 +68,13 @@ export default class PopularTab extends Component {
     }
   }
 
-  componentWillReceiveProps = () => {
+
+  componentWillReceiveProps = (nextProps) => {
     if (this.isNeedSync) {
       this.isNeedSync = false
+      this.syncingData()
+    } else if (nextProps.theme !== this.state.theme) {
+      this.setState({ theme: nextProps.theme })
       this.syncingData()
     }
   }

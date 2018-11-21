@@ -72,6 +72,9 @@ export default class TrendingTab extends Component {
     } else if (this.isNeedSync) {
       this.isNeedSync = false
       this.syncingData()
+    } else if (nextProps.theme !== this.state.theme) {
+      this.setState({ theme: nextProps.theme })
+      this.syncingData()
     }
   }
 

@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import {
   StyleSheet, View,
@@ -15,6 +15,8 @@ import MoreMenu from '../MoreMenu'
 import { MENU } from '../../constants/Menu'
 // utils
 import ViewUtils from '../../utils/ViewUtils'
+// base
+import BaseComponent from '../BaseComponent'
 
 const styles = StyleSheet.create({
   root: {
@@ -22,7 +24,7 @@ const styles = StyleSheet.create({
   },
 })
 
-export default class FavoritePage extends Component {
+export default class FavoritePage extends BaseComponent {
   static propTypes = {
     theme: PropTypes.object,
   }
@@ -35,10 +37,11 @@ export default class FavoritePage extends Component {
   }
 
   componentDidMount = () => {
+    super.componentDidMount()
   }
 
   // 渲染更多菜单
-  renderMoreMenu = () => {
+  renderMoreMenu() {
     return (
       <MoreMenu
         theme={this.state.theme}
@@ -52,7 +55,7 @@ export default class FavoritePage extends Component {
     )
   }
 
-  renderContent = () => {
+  renderContent() {
     const { theme } = this.state
     return (
       <ScrollableTabView

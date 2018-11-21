@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import {
   StyleSheet, View, TouchableOpacity, Image,
@@ -18,6 +18,8 @@ import IMG_SEARCH from '../../../assets/images/ic_search_white_48pt.png'
 import { MENU } from '../../constants/Menu'
 // utils
 import ViewUtils from '../../utils/ViewUtils'
+// base
+import BaseComponent from '../BaseComponent'
 
 const styles = StyleSheet.create({
   root: {
@@ -25,7 +27,7 @@ const styles = StyleSheet.create({
   },
 })
 
-export default class PopularPage extends Component {
+export default class PopularPage extends BaseComponent {
   static propTypes = {
     navigation: PropTypes.object,
     theme: PropTypes.object,
@@ -52,6 +54,7 @@ export default class PopularPage extends Component {
   }
 
   componentDidMount = () => {
+    super.componentDidMount()
     this.initData()
   }
 

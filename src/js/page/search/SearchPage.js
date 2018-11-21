@@ -112,7 +112,7 @@ export default class SearchPage extends Component {
       }
       const reqUrl = this.genFetchUrl(this.text)
       if (reqUrl === null) {
-        this.setState({ isLoading: false })
+        this.setState({ isLoading: false, rightButtonText: '搜索' })
         return
       }
       const resp = await fetch(reqUrl)

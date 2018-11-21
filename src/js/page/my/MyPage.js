@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import {
   StyleSheet, View, Text, ScrollView, TouchableHighlight, Image,
@@ -14,6 +14,8 @@ import IMG_TIAOZHUAN from '../../../assets/images/ic_tiaozhuan.png'
 import { MENU } from '../../constants/Menu'
 // utils
 import ViewUtils from '../../utils/ViewUtils'
+// base
+import BaseComponent from '../BaseComponent'
 
 const styles = StyleSheet.create({
   root: {
@@ -43,7 +45,7 @@ const styles = StyleSheet.create({
   },
 })
 
-export default class MyPage extends Component {
+export default class MyPage extends BaseComponent {
   static propTypes = {
     theme: PropTypes.object,
     navigation: PropTypes.object,
@@ -57,7 +59,7 @@ export default class MyPage extends Component {
   }
 
   componentDidMount = () => {
-
+    super.componentDidMount()
   }
 
   onClick = (navigateTo) => {
@@ -112,7 +114,7 @@ export default class MyPage extends Component {
     )
   }
 
-  renderLogo = () => {
+  renderLogo() {
     const { theme } = this.state
     return (
       <TouchableHighlight onPress={() => this.onClick(MENU.About)}>

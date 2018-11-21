@@ -30,12 +30,11 @@ export default class FavoriteTab extends Component {
 
   constructor(props) {
     super(props)
-    const { theme, useIn } = this.props
+    const { useIn } = this.props
     const isPopular = useIn === USE_IN.POPULAR
     this.collectionDao = new CollectionDao(isPopular ? USE_IN.POPULAR : USE_IN.TRENDING)
     this.FavoriteRepoCell = isPopular ? PopularRepoCell : TrendingRepoCell
     this.state = { // 重复数据不渲染
-      theme,
       dataSource: new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 }),
       isLoading: false, // 是否正在加载数据
     }
@@ -91,7 +90,7 @@ export default class FavoriteTab extends Component {
    */
   onSelect = (item, isCollected) => {
     const { navigation } = this.props
-    const { theme } = this.state
+    const { theme } = this.props
     const syncFavoritePage = () => {
       this.syncingData()
       this.emitToSyncData()
@@ -104,7 +103,7 @@ export default class FavoriteTab extends Component {
   renderRow = (repoCell, FavoriteRepoCell) => {
     return (
       <FavoriteRepoCell
-        theme={this.state.theme}
+        theme={this.props.theme}
         repoCell={repoCell}
         onSelect={(item, isCollected) => {
           this.onSelect(item, isCollected)
@@ -122,7 +121,8 @@ export default class FavoriteTab extends Component {
   }
 
   render() {
-    const { theme, dataSource, isLoading } = this.state
+    const { theme } = this.props
+    const { dataSource, isLoading } = this.state
     return (
       <View style={styles.root}>
         <ListView
