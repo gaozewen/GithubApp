@@ -16,6 +16,8 @@ utils           工具
 # 打包apk
 - react-native run-android --variant=release
 - adb shell input keyevent 82
+- keytool -v -list -keystore  android_keystore.jks
+- keytool -v -list -keystore  my-release-key.keystore
 
 # 打包 ios
 

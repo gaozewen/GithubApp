@@ -1,0 +1,38 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 27
+
+
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+  implementation fileTree(include: ['*.jar'], dir: 'libs')
+  implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
+  implementation 'com.facebook.react:react-native:+'
+  implementation files('libs/umeng-share-email-6.9.4.jar')
+  implementation files('libs/umeng-share-QQ-simplify-6.9.4.jar')
+  implementation files('libs/umeng-share-sina-simplify-6.9.4.jar')
+  implementation files('libs/umeng-share-sms-6.9.4.jar')
+  implementation files('libs/umeng-share-wechat-simplify-6.9.4.jar')
+  implementation files('libs/umeng-shareboard-widget-6.9.4.jar')
+  implementation files('libs/umeng-sharetool-6.9.4.jar')
+  api files('libs/umeng-share-core-6.9.4.jar')
+  api files('libs/umeng-common-1.5.4.jar')
+}

@@ -9,6 +9,10 @@ import MenuDialog from '../common/MenuDialog'
 import { MENU } from '../constants/Menu'
 // dao
 import { USE_IN } from '../expand/dao/LanguageDao'
+// share
+import UShare from '../common/UShare'
+// ini
+import SHARE from '../../assets/ini/share.json'
 
 export default class MoreMenu extends Component {
   static propTypes = {
@@ -31,8 +35,8 @@ export default class MoreMenu extends Component {
     const { theme, navigation } = this.props
     let routeName
     let params
-
     const url = 'mailto://crazycodeboy@gmail.com'
+    const shareApp = SHARE.share_app
     switch (tab) {
       case MENU.Custom_Key:
         routeName = 'CustomKeyPage'
@@ -76,6 +80,11 @@ export default class MoreMenu extends Component {
         }).catch(err => console.error('An error occurred', err))
         break
       case MENU.Share:
+        UShare.share(
+          shareApp.title, shareApp.content,
+          shareApp.imgUrl, shareApp.url,
+          () => { }, () => { },
+        )
         break
       default:
         break
